@@ -30,7 +30,12 @@ arg_t *load_file(const char *path) {
 			break;
 		if (stm->args->type & F_TERMINATE) {
 			ret = copy_arg(stm->args, false);
-			delete_stm(stm);
+			if (stm->name != NULL) {
+				delete_stm(stm);
+			} else {
+				delete((arg_t *) stm->args);
+				free(stm);
+			}
 			break;
 		}
 		arg_t *res = execute(stm);
