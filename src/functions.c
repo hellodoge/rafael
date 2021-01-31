@@ -192,6 +192,11 @@ arg_t *ctrl_case(const arg_t *args) {
 		case_statement = get_next_to_given(args->next, &default_tok);
 	}
 	if (case_statement != NULL) {
+		while (case_statement->type != T_STATEMENT) {
+			case_statement = case_statement->next;
+			if (case_statement == NULL)
+				goto err;
+		}
 		ret = execute_inner_stm(ctrl_exec, case_statement, true);
 		if (ret->type & F_TERMINATE)
 			goto err;
