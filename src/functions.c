@@ -211,8 +211,7 @@ arg_t *ctrl_while(const arg_t *args) {
 	arg_t *ret = init_arg(T_INT),
 			*cnd = NULL,
 			*res = NULL;
-	if (!args_match_pattern(args, T_STATEMENT | F_NUMBER | F_HAVE_STR,
-	                        T_STATEMENT | F_MULTIPLE, F_END)) {
+	if (!args_match_pattern(args, F_BOOLEAN, T_STATEMENT | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "while: invalid arguments")
 	}
 	for (;; ret->value++) {
