@@ -306,6 +306,11 @@ arg_t *fnc_get(const arg_t *args) {
 	}
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next)
 		add_arg(&ret, get_var_copy(arg->string));
+	for (const arg_t *arg = ret; arg != NULL; arg = arg->next) {
+		if (arg->type == T_STATEMENT) {
+			EXCEPTION(ret, "get: cannot return statement");
+		}
+	}
 err:
 	return ret;
 }
