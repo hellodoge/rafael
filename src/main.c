@@ -1,8 +1,8 @@
-#include "context.h"
-#include "repl.h"
-#include "script_loader.h"
-#include "util.h"
-#include "gc.h"
+#include "include/context.h"
+#include "include/repl.h"
+#include "include/script_loader.h"
+#include "include/util.h"
+#include "include/gc.h"
 
 
 int main(int argc, char *argv[]) {

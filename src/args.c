@@ -1,7 +1,7 @@
-#include "args.h"
+#include "include/args.h"
 
-#include "statement.h"
-#include "gc.h"
+#include "include/statement.h"
+#include "include/gc.h"
 
 #include <stdbool.h>
 #include <stdlib.h>

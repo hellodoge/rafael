@@ -1,10 +1,10 @@
-#include "statement.h"
-#include "terminate.h"
-#include "functions.h"
-#include "vars.h"
-#include "context.h"
-#include "args.h"
-#include "gc.h"
+#include "include/statement.h"
+#include "include/terminate.h"
+#include "include/functions.h"
+#include "include/vars.h"
+#include "include/context.h"
+#include "include/args.h"
+#include "include/gc.h"
 
 #include <stddef.h>
 #include <assert.h>

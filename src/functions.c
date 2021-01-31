@@ -1,4 +1,4 @@
-#include "functions.h"
+#include "include/functions.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -6,13 +6,13 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "statement.h"
-#include "execution.h"
-#include "terminate.h"
-#include "args.h"
-#include "vars.h"
-#include "util.h"
-#include "gc.h"
+#include "include/statement.h"
+#include "include/execution.h"
+#include "include/terminate.h"
+#include "include/args.h"
+#include "include/vars.h"
+#include "include/util.h"
+#include "include/gc.h"
 
 arg_t *ctrl_define(const arg_t *arg);
 

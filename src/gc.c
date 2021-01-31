@@ -1,7 +1,7 @@
-#include "gc.h"
+#include "include/gc.h"
 
-#include "statement.h"
-#include "context.h"
+#include "include/statement.h"
+#include "include/context.h"
 
 #include <stdlib.h>
 #include <stdio.h>

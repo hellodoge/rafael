@@ -1,8 +1,8 @@
-#include "parser.h"
+#include "include/parser.h"
 
-#include "terminate.h"
-#include "args.h"
-#include "gc.h"
+#include "include/terminate.h"
+#include "include/args.h"
+#include "include/gc.h"
 
 #include <stdlib.h>
 #include <string.h>

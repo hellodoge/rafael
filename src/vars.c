@@ -1,8 +1,8 @@
-#include "vars.h"
+#include "include/vars.h"
 
-#include "context.h"
-#include "args.h"
-#include "gc.h"
+#include "include/context.h"
+#include "include/args.h"
+#include "include/gc.h"
 
 #include <stdlib.h>
 #include <string.h>

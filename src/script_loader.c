@@ -1,9 +1,9 @@
-#include "parser.h"
-#include "statement.h"
-#include "args.h"
-#include "execution.h"
-#include "terminate.h"
-#include "gc.h"
+#include "include/parser.h"
+#include "include/statement.h"
+#include "include/args.h"
+#include "include/execution.h"
+#include "include/terminate.h"
+#include "include/gc.h"
 
 #include <stdio.h>
 #include <string.h>

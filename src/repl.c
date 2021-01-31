@@ -1,8 +1,8 @@
-#include "parser.h"
-#include "context.h"
-#include "execution.h"
-#include "util.h"
-#include "gc.h"
+#include "include/parser.h"
+#include "include/context.h"
+#include "include/execution.h"
+#include "include/util.h"
+#include "include/gc.h"
 
 #include <malloc.h>
 #include <string.h>

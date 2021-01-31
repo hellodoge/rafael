@@ -1,6 +1,6 @@
-#include "context.h"
+#include "include/context.h"
 
-#include "gc.h"
+#include "include/gc.h"
 
 #include <stdlib.h>
 
