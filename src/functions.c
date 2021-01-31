@@ -148,8 +148,8 @@ err:
 arg_t *ctrl_if(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL;
-	if (!args_match_pattern(args, T_STATEMENT | F_NUMBER | F_HAVE_STR,
-	                        T_STATEMENT, T_NULL)) {
+	if (!args_match_pattern(args, F_BOOLEAN, T_STATEMENT | F_MULTIPLE, T_TOKEN | F_OPTIONAL,
+	                        T_STATEMENT | F_MULTIPLE | F_OPTIONAL, F_END)) {
 		EXCEPTION(ret, "if: invalid arguments")
 	}
 
