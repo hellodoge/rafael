@@ -52,10 +52,10 @@ void add_arg(arg_t **first, const arg_t *arg) {
 	/// safety: shouldn't use arg after this call
 	assert(first != NULL);
 	assert(arg != NULL);
-	arg_t *prev = *first;
 	if (*first == NULL) {
 		*first = (arg_t *) arg;
 	} else {
+		arg_t *prev = *first;
 		while (prev->next != NULL)
 			prev = prev->next;
 		prev->next = (arg_t *) arg;
