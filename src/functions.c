@@ -74,6 +74,8 @@ arg_t *ctrl_for(const arg_t *arg);
 
 arg_t *fnc_raise(const arg_t *arg);
 
+arg_t *fnc_struct(const arg_t *arg);
+
 const fnc_t predefined[] = {
 		{"null",   fnc_null},
 		{"ret",    fnc_return},
@@ -99,6 +101,7 @@ const fnc_t predefined[] = {
 		{"repeat", fnc_repeat},
 		{"len",    fnc_len},
 		{"index",  fnc_index},
+		{"struct", fnc_struct},
 		{"exit",   fnc_exit},
 		{"raise",  fnc_raise},
 		{"def",    ctrl_define, FF_DO_NOT_EXECUTE_ARGS},
@@ -444,6 +447,19 @@ arg_t *fnc_index(const arg_t *args) {
 err:
 	if (len != NULL)
 		delete(len);
+	return ret;
+}
+
+arg_t *fnc_struct(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, T_TOKEN, T_NULL)) {
+		EXCEPTION(ret, "struct: invalid arguments");
+	}
+	const arg_t *elem = get_next_to_given(args->next, args);
+	for (; elem != NULL && elem->type != T_TOKEN; elem = elem->next) {
+		add_arg(&ret, copy_arg(elem, false));
+	}
+err:
 	return ret;
 }
 
