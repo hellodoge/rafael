@@ -126,7 +126,7 @@ bool args_match_pattern(const arg_t *args, ...) {
 			va_end(data_types);
 			return true;
 		}
-		if (type & F_OPTIONAL && args != NULL && !(type & args->type))
+		if (type & F_OPTIONAL && (args == NULL || !(type & args->type)))
 			continue;
 		if (args == NULL || !(args->type & type)) {
 			va_end(data_types);
