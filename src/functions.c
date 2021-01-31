@@ -178,8 +178,7 @@ err:
 arg_t *ctrl_case(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL;
-	if (!args_match_pattern(args, T_STATEMENT | F_NUMBER | F_HAVE_STR,
-	                        T_STATEMENT, T_NULL)) {
+	if (!args_match_pattern(args, T_STATEMENT | F_NUMBER | T_TOKEN | T_STRING, T_NULL)) {
 		EXCEPTION(ret, "case: invalid arguments")
 	}
 	if (args->type & T_STATEMENT) {
