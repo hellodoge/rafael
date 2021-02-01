@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "include/script_loader.h"
 #include "include/statement.h"
 #include "include/execution.h"
 #include "include/terminate.h"
@@ -76,6 +77,8 @@ arg_t *fnc_raise(const arg_t *arg);
 
 arg_t *fnc_struct(const arg_t *arg);
 
+arg_t *fnc_import(const arg_t *arg);
+
 const fnc_t predefined[] = {
 		{"null",   fnc_null},
 		{"ret",    fnc_return},
@@ -104,6 +107,7 @@ const fnc_t predefined[] = {
 		{"struct", fnc_struct},
 		{"exit",   fnc_exit},
 		{"raise",  fnc_raise},
+		{"import", fnc_import},
 		{"def",    ctrl_define, FF_DO_NOT_EXECUTE_ARGS},
 		{"exec",   ctrl_exec,   FF_DO_NOT_EXECUTE_ARGS},
 		{"if",     ctrl_if,     FF_DO_NOT_EXECUTE_ARGS},
@@ -563,6 +567,24 @@ arg_t *fnc_mul(const arg_t *args) {
 			ret->floating *= i->floating;
 		delete(res);
 	}
+	return ret;
+}
+
+arg_t *fnc_import(const arg_t *args) {
+	arg_t *ret = NULL,
+	      *res = NULL;
+	if (!args_match_pattern(args, T_STRING | F_MULTIPLE, F_END)) {
+		EXCEPTION(ret, "import: invalid arguments");
+	}
+	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
+		res = load_file(arg->string);
+		RETURN_IF_TERMINATE(ret, res);
+		add_arg(&ret, res);
+		res = NULL;
+	}
+err:
+	if (res != NULL)
+		delete(res);
 	return ret;
 }
 
