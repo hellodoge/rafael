@@ -1,7 +1,9 @@
 #ifndef RAFAEL_UTIL_H
 #define RAFAEL_UTIL_H
 
-char *get_unlimited_input(char *buffer);
+#include <stdbool.h>
+
+char *get_unlimited_input(char *buffer, bool *eof_flag);
 
 void print_error(const char *message);
 

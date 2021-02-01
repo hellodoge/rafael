@@ -1,10 +1,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #define DEFAULT_BUFFER_SIZE 16
 
-char *get_unlimited_input(char *buffer) {
+char *get_unlimited_input(char *buffer, bool *eof_flag) {
 	size_t current_size;
 	char *cursor;
 	if (buffer == NULL) {
@@ -17,8 +18,11 @@ char *get_unlimited_input(char *buffer) {
 	}
 	for (;;) {
 		int current = getchar();
-		if (current == EOF)
+		if (current == EOF) {
+			if (eof_flag != NULL)
+				*eof_flag = true;
 			break;
+		}
 		*cursor = (char) current;
 		cursor++;
 		if (cursor >= buffer + current_size) {

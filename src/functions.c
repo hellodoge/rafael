@@ -401,8 +401,10 @@ arg_t *fnc_print(const arg_t *args) {
 
 arg_t *fnc_input(const arg_t *args) {
 	arg_t *ret = init_arg(T_STRING | F_ORIGINAL);
-	ret->string = get_unlimited_input(NULL);
-	*(char *) (ret->string + strlen(ret->string) - 1) = '\0';
+	bool eof_flag = false;
+	ret->string = get_unlimited_input(NULL, &eof_flag);
+	if (!eof_flag)
+		*(char *) (ret->string + strlen(ret->string) - 1) = '\0';
 	return ret;
 }
 
