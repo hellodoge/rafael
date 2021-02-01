@@ -88,12 +88,13 @@ typedef struct working_directory_list working_directory_list_t;
 
 void set_working_directory(char *path_to_file) {
 	/// safety: path_to_file must be valid
+	/// if path_to_file doesn't contain slashes, it won't set working_directory
 	char *path;
 	{
 		char *slash = strrchr(path_to_file, '/');
 		char *backslash = strrchr(path_to_file, '\\');
 		char *last_slash = slash > backslash ? slash : backslash;
-		assert(last_slash != NULL);
+		if (last_slash == NULL) return;
 		path = strndup(path_to_file, last_slash - path_to_file + 1);
 	}
 	struct working_directory_list *current = malloc(sizeof(working_directory_list_t));
