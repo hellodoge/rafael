@@ -26,12 +26,19 @@ arg_t *process_variable(slice_t var);
 
 stm_t *parse(const char **textPtr) {
 	const char *text = *textPtr;
-	slice_t expr = get_expression(text);
-	if (expr.start == NULL)
-		return NULL;
 
 	stm_t *stm = malloc(sizeof(stm_t));
 	memset(stm, 0, sizeof(stm_t));
+
+	slice_t expr = get_expression(text);
+	if (expr.start == NULL) {
+		if (strchr(text, ')') == NULL) {
+			free(stm);
+			return NULL;
+		} else {
+			EXCEPTION(stm->args, "Parser: Single closing parenthesis");
+		}
+	}
 	slice_t name = get_token(expr.start + 1, "( \t\n)");
 	{
 		char *open_parenthesis = strchr(expr.start + 1, '(');
