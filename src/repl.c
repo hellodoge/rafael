@@ -10,15 +10,17 @@
 
 void show_return(const arg_t *args);
 
-const char *input_expression();
+char *input_expression();
 
 int repl(void) {
 	int exit_code = 1;
 	for (bool exit = false; exit == false;) {
-		const char *buffer = input_expression();
+		char *buffer = input_expression();
 		if (buffer == NULL)
 			return 0;
-		stm_t *stm = parse(&buffer);
+		const char *text = buffer;
+		stm_t *stm = parse(&text);
+		free(buffer);
 		if (stm == NULL)
 			return 0;
 		if (stm->args->type == T_EXCEPTION) {
@@ -41,7 +43,7 @@ int repl(void) {
 	return exit_code;
 }
 
-const char *input_expression() {
+char *input_expression() {
 	char *buffer = NULL;
 	slice_t expr = {NULL, NULL};
 	static bool eof_flag = false;
