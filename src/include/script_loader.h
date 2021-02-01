@@ -3,6 +3,6 @@
 
 #include "statement.h"
 
-arg_t *load_file(const char *path);
+arg_t *load_file(const char *relative_path);
 
 #endif //RAFAEL_SCRIPT_LOADER_H
