@@ -373,6 +373,7 @@ arg_t *fnc_to_str(const arg_t *args) {
 		else if (arg->type & T_REAL)
 			cursor += sprintf(cursor, "%.6f", arg->floating);
 	}
+	*cursor = '\0';
 	ret->string = string;
 	return ret;
 }
