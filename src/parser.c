@@ -32,10 +32,16 @@ stm_t *parse(const char **textPtr) {
 
 	stm_t *stm = malloc(sizeof(stm_t));
 	memset(stm, 0, sizeof(stm_t));
-
-	slice_t name = get_token(expr.start, "( \t\n)");
-	if (name.start == NULL || name.start > expr.end) {
-		EXCEPTION(stm->args, "Parser: Name of expression not found");
+	slice_t name = get_token(expr.start + 1, "( \t\n)");
+	{
+		char *open_parenthesis = strchr(expr.start + 1, '(');
+		char *close_parenthesis = strchr(expr.start + 1, ')');
+		char *closer_parenthesis = open_parenthesis < close_parenthesis ?
+		                           open_parenthesis : close_parenthesis;
+		if (name.start == NULL ||
+		    (closer_parenthesis != NULL && name.start > closer_parenthesis)) {
+			EXCEPTION(stm->args, "Parser: Name of expression not found");
+		}
 	}
 	stm->name = slice_to_str(name);
 	stm->name_rc = init_ref_counter();
@@ -100,6 +106,7 @@ err:
 }
 
 arg_t *parse_string(slice_t slice);
+
 slice_t get_string(const char *text);
 
 arg_t *process_string(const char **text) {
