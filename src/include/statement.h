@@ -16,18 +16,19 @@ typedef enum arg_types_and_flags {
 	T_VAR		= 0x1u << 5u,
 	T_TOKEN		= 0x1u << 6u,
 	T_EXIT      = 0x1u << 7u,
+	T_LAMBDA    = 0x1u << 8u,
 
 	F_TERMINATE = T_EXCEPTION | T_EXIT,
 	F_NUMBER	= T_INT | T_REAL,
 	F_BOOLEAN   = T_STRING | F_NUMBER | T_STATEMENT,
 	F_HAVE_STR	= T_STRING | T_VAR | T_TOKEN | T_EXCEPTION,
-	F_ALLOCATED	= T_STATEMENT | F_HAVE_STR,
+	F_ALLOCATED	= T_STATEMENT | F_HAVE_STR | T_LAMBDA,
 
-	F_ORIGINAL	= 0x1u << 8u, //used and dropped by init_arg
+	F_ORIGINAL	= 0x1u << 9u, //used and dropped by init_arg
 
-	F_MULTIPLE  = 0x1u << 9u, //used by args_match_pattern
-	F_END       = 0x1u << 10u,
-	F_OPTIONAL  = 0x1u << 11u,
+	F_MULTIPLE  = 0x1u << 10u, //used by args_match_pattern
+	F_END       = 0x1u << 11u,
+	F_OPTIONAL  = 0x1u << 12u,
 } type_t;
 
 struct statement {
@@ -42,6 +43,7 @@ struct argument {
 		void *content;
 		const char *string;
 		const stm_t *statement;
+		const arg_t *lambda;
 		int value;
 		double floating;
 	};

@@ -48,6 +48,8 @@ void forget(arg_t *arg) {
 		free(arg->rc);
 		if (arg->type & T_STATEMENT) {
 			delete_stm((stm_t *) arg->statement);
+		} else if (arg->type & T_LAMBDA) {
+			delete((arg_t *)arg->lambda);
 		} else {
 			free(arg->content);
 		}

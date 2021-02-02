@@ -79,6 +79,10 @@ arg_t *fnc_struct(const arg_t *arg);
 
 arg_t *fnc_import(const arg_t *arg);
 
+arg_t *ctrl_lambda(const arg_t *arg);
+
+arg_t *ctrl_run_lambda(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",   fnc_null},
 		{"ret",    fnc_return},
@@ -108,12 +112,14 @@ const fnc_t predefined[] = {
 		{"exit",   fnc_exit},
 		{"raise",  fnc_raise},
 		{"import", fnc_import},
-		{"def",    ctrl_define, FF_DO_NOT_EXECUTE_ARGS},
-		{"exec",   ctrl_exec,   FF_DO_NOT_EXECUTE_ARGS},
-		{"if",     ctrl_if,     FF_DO_NOT_EXECUTE_ARGS},
-		{"while",  ctrl_while,  FF_DO_NOT_EXECUTE_ARGS},
-		{"for",    ctrl_for,    FF_DO_NOT_EXECUTE_ARGS},
-		{"case",   ctrl_case,   FF_DO_NOT_EXECUTE_ARGS}
+		{"def",    ctrl_define,     FF_DO_NOT_EXECUTE_ARGS},
+		{"lambda", ctrl_lambda,     FF_DO_NOT_EXECUTE_ARGS},
+		{"exec",   ctrl_exec,       FF_DO_NOT_EXECUTE_ARGS},
+		{"run",    ctrl_run_lambda, FF_DO_NOT_EXECUTE_ARGS},
+		{"if",     ctrl_if,         FF_DO_NOT_EXECUTE_ARGS},
+		{"while",  ctrl_while,      FF_DO_NOT_EXECUTE_ARGS},
+		{"for",    ctrl_for,        FF_DO_NOT_EXECUTE_ARGS},
+		{"case",   ctrl_case,       FF_DO_NOT_EXECUTE_ARGS}
 };
 
 const fnc_t *get_predefined(const char *string) {
@@ -131,6 +137,17 @@ arg_t *ctrl_define(const arg_t *arg) {
 		EXCEPTION(ret, "define: invalid arguments")
 	}
 	set_var_globally(arg->string, arg->rc, copy_arg(arg->next, true));
+err:
+	return ret;
+}
+
+arg_t *ctrl_lambda(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, T_TOKEN | F_MULTIPLE | F_OPTIONAL, T_STATEMENT | F_MULTIPLE, F_END)) {
+		EXCEPTION(ret, "lambda: invalid arguments")
+	}
+	ret = init_arg(T_LAMBDA | F_ORIGINAL);
+	ret->lambda = copy_arg(args, true);
 err:
 	return ret;
 }
@@ -330,6 +347,28 @@ arg_t *ctrl_exec(const arg_t *args) {
 			break;
 	}
 err:
+	return ret;
+}
+
+arg_t *ctrl_run_lambda(const arg_t *args) {
+	arg_t *ret = NULL,
+	      *lambda = NULL;
+	if (!args_match_pattern(args, T_LAMBDA | T_STATEMENT, T_NULL)) {
+		EXCEPTION(ret, "run: invalid arguments")
+	}
+	if (args->type == T_LAMBDA)
+		lambda = copy_arg(args, false);
+	else { // if (args->type == T_STATEMENT)
+		lambda = execute(args->statement);
+		RETURN_IF_TERMINATE(ret, lambda);
+		if (lambda->type != T_LAMBDA || lambda->next != NULL) {
+			EXCEPTION(ret, "run: the first statement must return one lambda");
+		}
+	}
+	ret = macro_processor(lambda->lambda, args->next);
+err:
+	if (lambda != NULL)
+		delete(lambda);
 	return ret;
 }
 
