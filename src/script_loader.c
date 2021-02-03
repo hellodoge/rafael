@@ -38,9 +38,9 @@ arg_t *load_file(const char *relative_path) {
 		free(path);
 		path = concat_with_standard_lib_directory(relative_path);
 		if (path == NULL) {
-			EXCEPTION(ret, "File %s doesn't seem to exist (cannot obtain standard library)", path);
+			EXCEPTION(ret, "File %s doesn't seem to exist (cannot obtain standard library)", relative_path);
 		} if (access(path, F_OK) != 0) {
-			EXCEPTION(ret, "File %s doesn't seem to exist", path);
+			EXCEPTION(ret, "File %s doesn't seem to exist", relative_path);
 		}
 	}
 	set_working_directory(path);
