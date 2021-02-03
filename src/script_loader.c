@@ -24,6 +24,8 @@ void remove_working_directory(void);
 
 char *concat_with_working_directory(const char *relative_path);
 
+char *concat_with_standard_lib_directory(const char *relative_path);
+
 arg_t *load_file(const char *relative_path) {
 	arg_t *ret = NULL;
 
@@ -33,7 +35,13 @@ arg_t *load_file(const char *relative_path) {
 	else
 		path = strdup(relative_path);
 	if (access(path, F_OK) != 0) {
-		EXCEPTION(ret, "File %s doesn't seem to exist", path);
+		free(path);
+		path = concat_with_standard_lib_directory(relative_path);
+		if (path == NULL) {
+			EXCEPTION(ret, "File %s doesn't seem to exist (cannot obtain standard library)", path);
+		} if (access(path, F_OK) != 0) {
+			EXCEPTION(ret, "File %s doesn't seem to exist", path);
+		}
 	}
 	set_working_directory(path);
 
@@ -117,4 +125,22 @@ char *concat_with_working_directory(const char *relative_path) {
 	*path = '\0';
 	strcat(strcat(path, working_directory->path), relative_path);
 	return path;
+}
+
+char *concat_with_standard_lib_directory(const char *relative_path) {
+#ifndef _WIN32
+#define LIB_FOLDER "/.local/lib/rafael/"
+	char *basedir = getenv("HOME");
+	if (basedir == NULL)
+		return NULL;
+#else
+#define LIB_FOLDER "/rafael/lib/"
+	char *basedir = getenv("localappdata");
+	if (basedir == NULL)
+		return NULL;
+#endif
+	char *path = malloc((strlen(basedir) + strlen(relative_path)) * sizeof(char) + sizeof(LIB_FOLDER));
+	*path = '\0';
+	return strcat(strcat(strcat(path, basedir), LIB_FOLDER), relative_path);
+#undef LIB_FOLDER
 }
