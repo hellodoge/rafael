@@ -38,9 +38,9 @@ char *get_unlimited_input(char *buffer, bool *eof_flag) {
 	return buffer;
 }
 
+#undef DEFAULT_BUFFER_SIZE
+
 void print_error(const char *message) {
 	fprintf(stderr, "Error! %s\n", message);
 }
 
-
-#undef DEFAULT_BUFFER_SIZE
