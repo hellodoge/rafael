@@ -180,11 +180,13 @@ arg_t *parse_string(slice_t slice) {
 		EXCEPTION(string_arg, "Parser: String not properly ended");
 	}
 	size_t len = 0;
-	for (const char *i = slice.start; i < slice.end; i++)
-		if (*i != '\\' || (i > slice.start && *(i - 1) == '\\'))
-			len++;
-	string = malloc(len + 2);
-	*(string + len + 1) = '\0';
+	for (const char *i = slice.start; i <= slice.end; i++) {
+		if (*i == '\\')
+			i++;
+		len++;
+	}
+	string = malloc(len + 1);
+	*(string + len) = '\0';
 	char *cursor = string;
 	for (const char *i = slice.start; i <= slice.end; i++) {
 		if (*i == '\\') {
