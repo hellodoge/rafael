@@ -85,44 +85,47 @@ arg_t *ctrl_run_lambda(const arg_t *args);
 
 arg_t *fnc_split(const arg_t *args);
 
+arg_t *fnc_replace(const arg_t *args);
+
 const fnc_t predefined[] = {
-		{"null",   fnc_null},
-		{"ret",    fnc_return},
-		{"print",  fnc_print},
-		{"input",  fnc_input},
-		{"str",    fnc_to_str},
-		{"int",    fnc_to_int},
-		{"+",      fnc_sum},
-		{"sum",    fnc_sum},
-		{"*",      fnc_mul},
-		{"mul",    fnc_mul},
-		{"get",    fnc_get},
-		{"set",    fnc_set},
-		{"global", fnc_global},
-		{"<",      fnc_less},
-		{">",      fnc_more},
-		{"<=",     fnc_less_or_equal},
-		{">=",     fnc_more_or_equal},
-		{"==",     fnc_equal},
-		{"<>",     fnc_not_equal},
-		{"!=",     fnc_not_equal},
-		{"join",   fnc_join},
-		{"repeat", fnc_repeat},
-		{"split",  fnc_split},
-		{"len",    fnc_len},
-		{"index",  fnc_index},
-		{"struct", fnc_struct},
-		{"exit",   fnc_exit},
-		{"raise",  fnc_raise},
-		{"import", fnc_import},
-		{"def",    ctrl_define,     FF_DO_NOT_EXECUTE_ARGS},
-		{"lambda", ctrl_lambda,     FF_DO_NOT_EXECUTE_ARGS},
-		{"exec",   ctrl_exec,       FF_DO_NOT_EXECUTE_ARGS},
-		{"run",    ctrl_run_lambda, FF_DO_NOT_EXECUTE_ARGS},
-		{"if",     ctrl_if,         FF_DO_NOT_EXECUTE_ARGS},
-		{"while",  ctrl_while,      FF_DO_NOT_EXECUTE_ARGS},
-		{"for",    ctrl_for,        FF_DO_NOT_EXECUTE_ARGS},
-		{"case",   ctrl_case,       FF_DO_NOT_EXECUTE_ARGS}
+		{"null",    fnc_null},
+		{"ret",     fnc_return},
+		{"print",   fnc_print},
+		{"input",   fnc_input},
+		{"str",     fnc_to_str},
+		{"int",     fnc_to_int},
+		{"+",       fnc_sum},
+		{"sum",     fnc_sum},
+		{"*",       fnc_mul},
+		{"mul",     fnc_mul},
+		{"get",     fnc_get},
+		{"set",     fnc_set},
+		{"global",  fnc_global},
+		{"<",       fnc_less},
+		{">",       fnc_more},
+		{"<=",      fnc_less_or_equal},
+		{">=",      fnc_more_or_equal},
+		{"==",      fnc_equal},
+		{"<>",      fnc_not_equal},
+		{"!=",      fnc_not_equal},
+		{"join",    fnc_join},
+		{"repeat",  fnc_repeat},
+		{"replace", fnc_replace},
+		{"split",   fnc_split},
+		{"len",     fnc_len},
+		{"index",   fnc_index},
+		{"struct",  fnc_struct},
+		{"exit",    fnc_exit},
+		{"raise",   fnc_raise},
+		{"import",  fnc_import},
+		{"def",     ctrl_define,     FF_DO_NOT_EXECUTE_ARGS},
+		{"lambda",  ctrl_lambda,     FF_DO_NOT_EXECUTE_ARGS},
+		{"exec",    ctrl_exec,       FF_DO_NOT_EXECUTE_ARGS},
+		{"run",     ctrl_run_lambda, FF_DO_NOT_EXECUTE_ARGS},
+		{"if",      ctrl_if,         FF_DO_NOT_EXECUTE_ARGS},
+		{"while",   ctrl_while,      FF_DO_NOT_EXECUTE_ARGS},
+		{"for",     ctrl_for,        FF_DO_NOT_EXECUTE_ARGS},
+		{"case",    ctrl_case,       FF_DO_NOT_EXECUTE_ARGS}
 };
 
 const fnc_t *get_predefined(const char *string) {
@@ -510,6 +513,26 @@ arg_t *fnc_repeat(const arg_t *args) {
 		goto err;
 	for (int i = 0; i < args->value; i++) {
 		add_arg(&ret, copy_arg(args->next, true));
+	}
+err:
+	return ret;
+}
+
+arg_t *fnc_replace(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (args->type == T_NULL || args->next == NULL) {
+		EXCEPTION(ret, "replace: invalid arguments")
+	}
+	const arg_t *remove = args;
+	const arg_t *insert = args->next;
+	for (const arg_t *arg = args->next->next; arg != NULL; arg = arg->next) {
+		arg_t *current;
+		if (compare(arg, remove) == 0) {
+			current = copy_arg(insert, false);
+		} else {
+			current = copy_arg(arg, false);
+		}
+		add_arg(&ret, current);
 	}
 err:
 	return ret;
