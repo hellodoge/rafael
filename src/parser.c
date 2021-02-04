@@ -180,7 +180,7 @@ arg_t *parse_string(slice_t slice) {
 		EXCEPTION(string_arg, "Parser: String not properly ended");
 	}
 	size_t len = 0;
-	for (const char *i = slice.start; i <= slice.end; i++) {
+	for (const char *i = slice.start + 1; i < slice.end; i++) {
 		if (*i == '\\')
 			i++;
 		len++;
@@ -188,7 +188,7 @@ arg_t *parse_string(slice_t slice) {
 	string = malloc(len + 1);
 	*(string + len) = '\0';
 	char *cursor = string;
-	for (const char *i = slice.start; i <= slice.end; i++) {
+	for (const char *i = slice.start + 1; i < slice.end; i++) {
 		if (*i == '\\') {
 			i++;
 			bool found = false;
@@ -218,11 +218,11 @@ slice_t get_string(const char *text) {
 	text = strpbrk(text, "'\"");
 	if (text == NULL)
 		return string;
-	const char start = *text++;
-	string.start = text;
+	const char start = *text;
+	string.start = text++;
 	for (; (text = strpbrk(text, "\\'\"")) != NULL;) {
 		if (*text == start) {
-			string.end = text - 1;
+			string.end = text;
 			return string;
 		}
 		if (*(++text) != '\0' && *(text - 1) == '\\')
@@ -245,7 +245,7 @@ slice_t get_expression(const char *text) {
 			slice_t string = get_string(text);
 			if (string.end == NULL)
 				return expr;
-			text = string.end + 1;
+			text = string.end;
 		} else i--; // *text == ')'
 		text++;
 	} while (i > 0);
