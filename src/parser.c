@@ -24,8 +24,8 @@ arg_t *process_token(slice_t arg);
 arg_t *process_variable(slice_t var);
 
 
-stm_t *parse(const char **textPtr) {
-	const char *text = *textPtr;
+stm_t *parse(const char **text_ptr) {
+	const char *text = *text_ptr;
 
 	stm_t *stm = malloc(sizeof(stm_t));
 	memset(stm, 0, sizeof(stm_t));
@@ -91,10 +91,10 @@ stm_t *parse(const char **textPtr) {
 		RETURN_IF_TERMINATE(stm->args, arg);
 		add_arg((arg_t **) &stm->args, arg);
 	}
-	*textPtr = expr.end + 1;
+	*text_ptr = expr.end + 1;
 err:
-	if (*textPtr != expr.end + 1)
-		*textPtr = ++text;
+	if (*text_ptr != expr.end + 1)
+		*text_ptr = ++text;
 	stm->args = safe_ret((arg_t *) stm->args);
 	return stm;
 }
@@ -174,10 +174,10 @@ arg_t *parse_string(slice_t slice) {
 			{'\"', '\"'},
 			{'\'', '\''}
 	};
-	arg_t *stringArg = NULL;
+	arg_t *string_arg = NULL;
 	char *string = NULL;
 	if (slice.start == NULL || slice.end == NULL) {
-		EXCEPTION(stringArg, "Parser: String not properly ended");
+		EXCEPTION(string_arg, "Parser: String not properly ended");
 	}
 	size_t len = 0;
 	for (const char *i = slice.start; i < slice.end; i++)
@@ -197,18 +197,18 @@ arg_t *parse_string(slice_t slice) {
 				}
 			}
 			if (!found) {
-				EXCEPTION(stringArg, "Parser: Escape sequence \\%c not found", *i);
+				EXCEPTION(string_arg, "Parser: Escape sequence \\%c not found", *i);
 			}
 		} else
 			*cursor++ = *i;
 	}
-	stringArg = init_arg(T_STRING);
-	stringArg->string = string;
-	return stringArg;
+	string_arg = init_arg(T_STRING);
+	string_arg->string = string;
+	return string_arg;
 err:
 	if (string != NULL)
 		free(string);
-	return stringArg;
+	return string_arg;
 }
 
 slice_t get_string(const char *text) {

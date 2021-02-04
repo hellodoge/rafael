@@ -10,7 +10,7 @@ typedef struct slice {
 	const char *end;
 } slice_t;
 
-stm_t *parse(const char **textPtr);
+stm_t *parse(const char **text_ptr);
 
 slice_t get_expression(const char *text);
 
