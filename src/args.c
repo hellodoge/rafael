@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <math.h>
 
 
 arg_t *init_arg(type_t type) {
@@ -110,8 +111,10 @@ bool every_arg_has_a_type(const arg_t *args, type_t type) {
 double compare(const arg_t *left, const arg_t *right) {
 	if (left->type & right->type & F_HAVE_STR)
 		return (double) strcmp(left->string, right->string);
-	else
+	else if (left->type & F_NUMBER && right->type & F_NUMBER)
 		return get_real(left) - get_real(right);
+	else
+		return NAN;
 }
 
 
