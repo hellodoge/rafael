@@ -87,6 +87,8 @@ arg_t *fnc_split(const arg_t *args);
 
 arg_t *fnc_replace(const arg_t *args);
 
+arg_t *fnc_div(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
@@ -98,6 +100,8 @@ const fnc_t predefined[] = {
 		{"sum",     fnc_sum},
 		{"*",       fnc_mul},
 		{"mul",     fnc_mul},
+		{"div",     fnc_div},
+		{"/",       fnc_div},
 		{"get",     fnc_get},
 		{"set",     fnc_set},
 		{"global",  fnc_global},
@@ -674,6 +678,20 @@ arg_t *fnc_mul(const arg_t *args) {
 			ret->floating *= i->floating;
 		delete(res);
 	}
+	return ret;
+}
+
+arg_t *fnc_div(const arg_t *args) {
+	arg_t *ret = init_arg(T_REAL);
+	ret->floating = get_real(args);
+	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+		double divider = get_real(arg);
+		if (divider == 0.f) {
+			EXCEPTION(ret, "div: division by zero");
+		}
+		ret->floating /= divider;
+	}
+err:
 	return ret;
 }
 
