@@ -83,6 +83,8 @@ arg_t *ctrl_lambda(const arg_t *arg);
 
 arg_t *ctrl_run_lambda(const arg_t *args);
 
+arg_t *fnc_split(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",   fnc_null},
 		{"ret",    fnc_return},
@@ -106,6 +108,7 @@ const fnc_t predefined[] = {
 		{"!=",     fnc_not_equal},
 		{"join",   fnc_join},
 		{"repeat", fnc_repeat},
+		{"split",  fnc_split},
 		{"len",    fnc_len},
 		{"index",  fnc_index},
 		{"struct", fnc_struct},
@@ -448,6 +451,45 @@ arg_t *fnc_input(const arg_t *args) {
 }
 
 #pragma clang diagnostic pop
+
+arg_t *fnc_split(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (args_match_pattern(args, T_INT, T_STRING | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		for (arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+			for (const char *cursor = arg->string; *cursor != '\0';) {
+				char *chars = get_n_chars_from_utf_8_str(cursor, args->value);
+				if (chars == NULL) {
+					EXCEPTION(ret, "split: the string is not valid utf-8");
+				}
+				arg_t *current = init_arg(T_STRING | F_ORIGINAL);
+				current->string = chars;
+				add_arg(&ret, current);
+				cursor += strlen(chars);
+			}
+		}
+	} else if (args_match_pattern(args, T_STRING | F_MULTIPLE, F_END)) {
+		for (arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+			for (const char *cursor = arg->string; *cursor != '\0';) {
+				char *occurrence = strstr(cursor, args->string);
+				if (occurrence != cursor) {
+					arg_t *current = init_arg(T_STRING | F_ORIGINAL);
+					if (occurrence == NULL) {
+						current->string = strdup(cursor);
+						add_arg(&ret, current);
+						break;
+					}
+					current->string = strndup(cursor, occurrence - cursor);
+					add_arg(&ret, current);
+				}
+				cursor = occurrence + strlen(args->string);
+			}
+		}
+	} else {
+		EXCEPTION(ret, "split: invalid arguments");
+	}
+err:
+	return ret;
+}
 
 arg_t *fnc_join(const arg_t *args) {
 	arg_t *ret = NULL;
