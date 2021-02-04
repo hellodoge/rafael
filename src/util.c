@@ -47,6 +47,8 @@ char *get_n_chars_from_utf_8_str(const char *string, size_t n) {
 	assert(string != NULL);
 	size_t size = 0;
 	for (size_t i = 0; i < n; i++) {
+		if (*(string + size) == '\0')
+			break;
 		const uint8_t *bytes = (uint8_t *) string + size;
 		uint8_t mask = 1u << 6u | 1u << 7u;
 		size_t size_of_char = 1;
