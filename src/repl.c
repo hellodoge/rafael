@@ -79,6 +79,8 @@ void show_return(const arg_t *args) {
 			printf("%f", arg->floating);
 		} else if (arg->type & T_TOKEN) {
 			printf("%s", arg->string);
+		} else if (arg->type & T_LAMBDA) {
+			printf("(lambda)");
 		}
 		if (arg->next != NULL)
 			printf(", ");
