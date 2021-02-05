@@ -741,9 +741,12 @@ arg_t *fnc_raise(const arg_t *args) {
 }
 
 arg_t *fnc_exit(const arg_t *args) {
-	arg_t *tmp = execute_inner_stm(fnc_to_int, args, true);
-	arg_t *ret = execute_inner_stm(fnc_sum, tmp, true);
-	delete(tmp);
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, T_INT | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "exit: invalid arguments");
+	}
+	ret = execute_inner_stm(fnc_sum, args, true);
 	ret->type = T_EXIT;
+err:
 	return ret;
 }
