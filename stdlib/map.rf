@@ -4,8 +4,8 @@
 	    )
 		(raise "map: invalid arguments")
 	)
+	(set a)
 	(null
-		(set a)
 		(for x &args
 			(set a &a
 				(run &f (get x))
