@@ -17,8 +17,6 @@ void add_exception(arg_t **arg, const char *format, ...);
 
 const arg_t *get_next_to_given(const arg_t *hay, const arg_t *needle);
 
-bool every_arg_has_a_type(const arg_t *args, type_t type);
-
 bool args_match_pattern(const arg_t *args, ...);
 
 double compare(const arg_t *left, const arg_t *right);

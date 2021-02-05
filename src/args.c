@@ -99,15 +99,6 @@ const arg_t *get_next_to_given(const arg_t *hay, const arg_t *needle) {
 	return NULL;
 }
 
-bool every_arg_has_a_type(const arg_t *args, type_t type) {
-	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
-		if (!(arg->type & type))
-			return false;
-	}
-	return true;
-}
-
-
 double compare(const arg_t *left, const arg_t *right) {
 	if (left->type & right->type & F_HAVE_STR)
 		return (double) strcmp(left->string, right->string);
