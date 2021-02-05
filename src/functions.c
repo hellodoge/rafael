@@ -649,17 +649,20 @@ arg_t *fnc_to_real(const arg_t *args) {
 
 arg_t *fnc_sum(const arg_t *args) {
 	arg_t *ret = NULL;
-	if (every_arg_has_a_type(args, T_INT)) {
+	if (args_match_pattern(args, T_INT | F_MULTIPLE | F_OPTIONAL, F_END)) {
 		ret = init_arg(T_INT);
 		for (const arg_t *arg = args; arg != NULL; arg = arg->next)
 			ret->value += arg->value;
-	} else {
+	} else if (args_match_pattern(args, F_NUMBER | F_MULTIPLE, F_END)) {
 		ret = init_arg(T_REAL);
 		arg_t *res = execute_inner_stm(fnc_to_real, args, true);
 		for (arg_t *i = res; i != NULL; i = i->next)
 			ret->floating += i->floating;
 		delete(res);
+	} else {
+		EXCEPTION(ret, "sum: invalid arguments");
 	}
+err:
 	return ret;
 }
 
