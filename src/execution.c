@@ -18,6 +18,7 @@ arg_t *macro_processor(const arg_t *macro, const arg_t *args);
 arg_t *execute(const stm_t *stm) {
 
 	arg_t *ret = NULL;
+	arg_t *macro = NULL;
 	const fnc_t *fnc = get_predefined(stm->name);
 	if (fnc != NULL) {
 		arg_t *args = convert_args(stm->args, fnc->flags);
@@ -26,14 +27,15 @@ arg_t *execute(const stm_t *stm) {
 		ret = fnc->func(args);
 		delete(args);
 	} else {
-		arg_t *macro = get_var_copy(stm->name);
+		macro = get_var_copy(stm->name);
 		if (!args_match_pattern(macro, T_TOKEN | F_MULTIPLE | F_OPTIONAL, T_STATEMENT | F_MULTIPLE, F_END)) {
 			EXCEPTION(ret, "No macro specified by %s", stm->name)
 		}
 		ret = macro_processor(macro, stm->args);
-		delete(macro);
 	}
 err:
+	if (macro != NULL)
+		delete(macro);
 	return safe_ret(ret);
 }
 
