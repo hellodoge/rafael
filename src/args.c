@@ -114,6 +114,8 @@ bool args_match_pattern(const arg_t *args, ...) {
 	va_start(data_types, args);
 	type_t type = T_NULL;
 	for (;;) { // TODO F_NOT
+		if (args != NULL && args->type == T_NULL)
+			args = args->next;
 		if (!(type & F_MULTIPLE && args != NULL && type & args->type))
 			type = va_arg(data_types, type_t);
 		if (type == T_NULL || (args == NULL && type == F_END)) {
