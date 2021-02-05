@@ -478,6 +478,8 @@ arg_t *fnc_input(const arg_t *args) {
 
 arg_t *fnc_type(const arg_t *args) {
 	arg_t *ret = NULL;
+	if (args->type == T_NULL)
+		goto err;
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
 		const char *type;
 		switch (arg->type) {
