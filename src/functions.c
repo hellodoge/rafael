@@ -740,8 +740,13 @@ err:
 }
 
 arg_t *fnc_raise(const arg_t *args) {
-	arg_t *ret = execute_inner_stm(fnc_to_str, args, true);
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, F_NUMBER | T_STRING | T_TOKEN | F_MULTIPLE, F_END)) {
+		EXCEPTION(ret, "raise: invalid arguments");
+	}
+	ret = execute_inner_stm(fnc_to_str, args, true);
 	ret->type = T_EXCEPTION;
+err:
 	return ret;
 }
 
