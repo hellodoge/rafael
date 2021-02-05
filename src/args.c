@@ -145,7 +145,7 @@ void add_exception(arg_t **arg, const char *format, ...) {
 
 	va_start(args, format);
 	size_t size = vsnprintf(0, 0, format, args);
-	char *str = malloc(size);
+	char *str = malloc(size + 1);
 	va_end(args);
 
 	va_start(args, format);
