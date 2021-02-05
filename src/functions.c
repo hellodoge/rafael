@@ -89,11 +89,14 @@ arg_t *fnc_replace(const arg_t *args);
 
 arg_t *fnc_div(const arg_t *args);
 
+arg_t *fnc_type(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
 		{"print",   fnc_print},
 		{"input",   fnc_input},
+		{"type",    fnc_type},
 		{"str",     fnc_to_str},
 		{"int",     fnc_to_int},
 		{"real",    fnc_to_real},
@@ -472,6 +475,38 @@ arg_t *fnc_input(const arg_t *args) {
 }
 
 #pragma clang diagnostic pop
+
+arg_t *fnc_type(const arg_t *args) {
+	arg_t *ret = NULL;
+	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
+		const char *type;
+		switch (arg->type) {
+			case T_INT:
+				type = "int";
+				break;
+			case T_REAL:
+				type = "real";
+				break;
+			case T_STRING:
+				type = "string";
+				break;
+			case T_TOKEN:
+				type = "token";
+				break;
+			case T_LAMBDA:
+				type = "lambda";
+				break;
+			default: {
+				EXCEPTION(ret, "type: cannot determine argument type")
+			}
+		}
+		arg_t *current = init_arg(T_TOKEN | F_ORIGINAL);
+		current->string = strdup(type);
+		add_arg(&ret, current);
+	}
+err:
+	return ret;
+}
 
 arg_t *fnc_split(const arg_t *args) {
 	arg_t *ret = NULL;
