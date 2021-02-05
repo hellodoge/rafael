@@ -686,14 +686,21 @@ arg_t *fnc_div(const arg_t *args) {
 	if (!args_match_pattern(args, F_NUMBER | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "div: invalid arguments")
 	}
-	ret = init_arg(T_REAL);
-	ret->floating = get_real(args);
+	ret = copy_arg(args, false);
 	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+		if (ret->type & arg->type & T_INT) {
+			int divider = get_int(arg);
+			if (divider != 0 && ret->value % divider == 0) {
+				ret->value /= divider;
+				continue;
+			}
+		}
 		double divider = get_real(arg);
 		if (divider == 0.f) {
 			EXCEPTION(ret, "div: division by zero");
 		}
-		ret->floating /= divider;
+		ret->floating = get_real(ret) / divider;
+		ret->type = T_REAL;
 	}
 err:
 	return ret;
