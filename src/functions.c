@@ -314,7 +314,7 @@ err:
 
 arg_t *fnc_set(const arg_t *args) {
 	arg_t *ret = NULL;
-	if (!args_match_pattern(args, F_HAVE_STR, T_NULL)) {
+	if (!args_match_pattern(args, T_TOKEN | T_STRING, T_NULL)) {
 		EXCEPTION(ret, "set: invalid arguments")
 	}
 	ret = args->next != NULL ? copy_arg(args->next, true) : init_arg(T_NULL);
