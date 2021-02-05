@@ -673,10 +673,8 @@ arg_t *fnc_mul(const arg_t *args) {
 	} else if (args_match_pattern(args, F_NUMBER | F_MULTIPLE, F_END)) {
 		ret = init_arg(T_REAL);
 		ret->floating = 1.f;
-		arg_t *res = execute_inner_stm(fnc_to_real, args, true);
-		for (arg_t *i = res; i != NULL; i = i->next)
-			ret->floating *= i->floating;
-		delete(res);
+		for (const arg_t *arg = args; arg != NULL; arg = arg->next)
+			ret->floating *= get_real(arg);
 	} else {
 		EXCEPTION(ret, "mul: invalid arguments");
 	}
