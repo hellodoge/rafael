@@ -682,7 +682,11 @@ arg_t *fnc_mul(const arg_t *args) {
 }
 
 arg_t *fnc_div(const arg_t *args) {
-	arg_t *ret = init_arg(T_REAL);
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, F_NUMBER | F_MULTIPLE, F_END)) {
+		EXCEPTION(ret, "div: invalid arguments")
+	}
+	ret = init_arg(T_REAL);
 	ret->floating = get_real(args);
 	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
 		double divider = get_real(arg);
