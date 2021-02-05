@@ -433,6 +433,9 @@ arg_t *fnc_to_str(const arg_t *args) {
 
 arg_t *fnc_print(const arg_t *args) {
 	arg_t *len = init_arg(T_INT);
+	if (!args_match_pattern(args, F_NUMBER | T_STRING | T_TOKEN | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(len, "print: invalid arguments");
+	}
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
 		if (arg->type & F_HAVE_STR) {
 			len->value += (int) strlen(arg->string);
@@ -446,6 +449,7 @@ arg_t *fnc_print(const arg_t *args) {
 		if (arg->next != NULL)
 			putchar(' ');
 	}
+err:
 	return len;
 }
 
