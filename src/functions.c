@@ -400,7 +400,11 @@ arg_t *fnc_null(const arg_t *args) {
 #pragma clang diagnostic pop
 
 arg_t *fnc_to_str(const arg_t *args) {
-	arg_t *ret = init_arg(T_STRING | F_ORIGINAL);
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, F_NUMBER | T_STRING | T_TOKEN | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "str: invalid arguments");
+	}
+	ret = init_arg(T_STRING | F_ORIGINAL);
 	size_t len = 1;
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
 		if (arg->type & F_HAVE_STR)
@@ -428,6 +432,7 @@ arg_t *fnc_to_str(const arg_t *args) {
 	}
 	*cursor = '\0';
 	ret->string = string;
+err:
 	return ret;
 }
 
