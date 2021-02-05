@@ -170,6 +170,9 @@ arg_t *fnc_cond(const arg_t *arg) {
 		RETURN_IF_TERMINATE(ret, cnd)
 	} else
 		cnd = copy_arg(arg, true);
+	if (!args_match_pattern(cnd, F_NUMBER | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "condition: invalid arguments")
+	}
 
 	arg_t *tmp = execute_inner_stm(fnc_to_real, cnd, true);
 	add_arg(&ret, execute_inner_stm(fnc_sum, tmp, true));
