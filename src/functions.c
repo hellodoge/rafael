@@ -633,11 +633,15 @@ arg_t *fnc_not_equal(const arg_t *args) {
 
 arg_t *fnc_to_int(const arg_t *args) {
 	arg_t *ret = NULL;
+	if (!args_match_pattern(args, F_NUMBER | T_STRING | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "int: invalid arguments");
+	}
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
 		arg_t *current = init_arg(T_INT);
 		current->value = get_int(arg);
 		add_arg(&ret, current);
 	}
+err:
 	return ret;
 }
 
