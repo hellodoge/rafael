@@ -336,7 +336,7 @@ err:
 
 arg_t *fnc_get(const arg_t *args) {
 	arg_t *ret = NULL;
-	if (!args_match_pattern(args, T_TOKEN | F_MULTIPLE, F_END)) {
+	if (!args_match_pattern(args, T_TOKEN | T_STRING | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "get: invalid arguments")
 	}
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next)
