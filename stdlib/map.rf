@@ -1,0 +1,16 @@
+(def map f
+	(if (+ (!= (len &f) 1)
+	       (!= (type &f) lambda)
+	    )
+		(raise "map: invalid arguments")
+	)
+	(null
+		(set a)
+		(for x &args
+			(set a &a
+				(run &f (get x))
+			)
+		)
+	)
+	(ret &a)
+)
