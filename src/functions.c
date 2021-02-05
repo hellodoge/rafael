@@ -96,6 +96,7 @@ const fnc_t predefined[] = {
 		{"input",   fnc_input},
 		{"str",     fnc_to_str},
 		{"int",     fnc_to_int},
+		{"real",    fnc_to_real},
 		{"+",       fnc_sum},
 		{"sum",     fnc_sum},
 		{"*",       fnc_mul},
