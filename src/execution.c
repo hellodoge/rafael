@@ -115,11 +115,10 @@ arg_t *convert_macro_args(const arg_t *args, const arg_t *macro) {
 		}
 		def = NULL;
 	}
-	if (additional != NULL) {
-		ref_counter_t *rc = init_ref_counter();
-		add_var_to_context(strdup("args"), rc, additional);
-		(*rc)--; //add_var_to_context increments the reference counter
-	}
+	ref_counter_t *rc_args = init_ref_counter();
+	add_var_to_context(strdup("args"), rc_args,
+	                   additional != NULL ? additional : init_arg(T_NULL));
+	(*rc_args)--; //add_var_to_context increments the reference counter
 	if (macro->type & T_STATEMENT) {
 		ret = copy_arg(macro, true);
 	} else {
