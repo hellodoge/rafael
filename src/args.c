@@ -36,7 +36,7 @@ arg_t *safe_ret(arg_t *args) {
 			arg->type = T_NULL;
 			delete(args);
 			return ret;
-		} else if (arg->type == T_NULL && arg->next != NULL) {
+		} else if (arg->type == T_NULL && (next != NULL || prev != NULL)) {
 			free(arg);
 			if (prev != NULL)
 				prev->next = next;
