@@ -36,7 +36,7 @@ arg_t *execute(const stm_t *stm) {
 err:
 	if (macro != NULL)
 		delete(macro);
-	return safe_ret(ret);
+	return put_args_in_order(ret);
 }
 
 arg_t *execute_inner_stm(fnc_ptr_t function, const arg_t *args, bool pass_next);
@@ -61,7 +61,7 @@ arg_t *execute_inner_stm(fnc_ptr_t function, const arg_t *args, bool pass_next) 
 	arg_t *copy = copy_arg(args, pass_next);
 	arg_t *ret = function(copy);
 	delete(copy);
-	return safe_ret(ret);
+	return put_args_in_order(ret);
 }
 
 arg_t *convert_argument(const arg_t *arg, fnc_flags_t fnc_flags);
@@ -75,7 +75,7 @@ arg_t *convert_args(const arg_t *arg, fnc_flags_t fnc_flags) {
 		arg = arg->next;
 	}
 err:
-	return safe_ret(ret);
+	return put_args_in_order(ret);
 }
 
 arg_t *convert_argument(const arg_t *arg, fnc_flags_t fnc_flags) {

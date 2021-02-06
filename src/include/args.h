@@ -7,7 +7,7 @@
 
 arg_t *init_arg(type_t type);
 
-arg_t *safe_ret(arg_t *args);
+arg_t *put_args_in_order(arg_t *args);
 
 void add_arg(arg_t **first, const arg_t *arg);
 

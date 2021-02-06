@@ -95,7 +95,7 @@ stm_t *parse(const char **text_ptr) {
 err:
 	if (*text_ptr != expr.end + 1)
 		*text_ptr = ++text;
-	stm->args = safe_ret((arg_t *) stm->args);
+	stm->args = put_args_in_order((arg_t *) stm->args);
 	return stm;
 }
 

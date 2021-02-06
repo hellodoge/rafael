@@ -24,7 +24,10 @@ arg_t *init_arg(type_t type) {
 	return arg;
 }
 
-arg_t *safe_ret(arg_t *args) {
+arg_t *put_args_in_order(arg_t *args) {
+	/// removes all null args
+	/// (except the last one if there are no other types)
+	/// if at least one F_TERMINATE is passed, put_args_in_order returns only it
 	if (args == NULL)
 		return init_arg(T_NULL);
 	if (args->next == NULL)
