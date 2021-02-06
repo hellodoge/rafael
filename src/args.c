@@ -135,6 +135,27 @@ bool args_match_pattern(const arg_t *args, ...) {
 	}
 }
 
+const char *find_unknown_keywords(const arg_t *args, ...) {
+	va_list allowed;
+
+	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
+		if (arg->type != T_TOKEN)
+			continue;
+		va_start(allowed, args);
+		const char *guess;
+		bool is_known = false;
+		while ((guess = va_arg(allowed, const char *)) != NULL) {
+			if (strcmp(guess, arg->string) == 0) {
+				is_known = true;
+				break;
+			}
+		}
+		va_end(allowed);
+		if (!is_known)
+			return arg->string;
+	}
+	return NULL;
+}
 
 void add_exception(arg_t **arg, const char *format, ...) {
 	va_list args;
