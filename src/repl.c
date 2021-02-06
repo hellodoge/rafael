@@ -83,7 +83,7 @@ void show_return(const arg_t *args) {
 			printf("(lambda)");
 		}
 		if (arg->next != NULL)
-			printf(", ");
+			putchar(' ');
 	}
 	if (args->next != NULL)
 		putchar(')');
