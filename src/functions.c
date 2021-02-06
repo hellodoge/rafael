@@ -192,6 +192,7 @@ err:
 arg_t *ctrl_if(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL;
+	EXCEPTION_IF_UNKNOWN_KEYWORDS("if", ret, args, "else");
 	if (!args_match_pattern(args, F_BOOLEAN, T_STATEMENT | F_MULTIPLE, T_TOKEN | F_OPTIONAL,
 	                        T_STATEMENT | F_MULTIPLE | F_OPTIONAL, F_END)) {
 		EXCEPTION(ret, "if: invalid arguments")
