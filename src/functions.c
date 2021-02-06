@@ -91,6 +91,8 @@ arg_t *fnc_div(const arg_t *args);
 
 arg_t *fnc_type(const arg_t *args);
 
+arg_t *fnc_search(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
@@ -122,6 +124,7 @@ const fnc_t predefined[] = {
 		{"split",   fnc_split},
 		{"len",     fnc_len},
 		{"index",   fnc_index},
+		{"search",  fnc_search},
 		{"struct",  fnc_struct},
 		{"exit",    fnc_exit},
 		{"raise",   fnc_raise},
@@ -618,6 +621,19 @@ arg_t *fnc_index(const arg_t *args) {
 err:
 	if (len != NULL)
 		delete(len);
+	return ret;
+}
+
+arg_t *fnc_search(const arg_t *args) {
+	arg_t *ret = NULL;
+	int index = 0;
+	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next, index++) {
+		if (compare(arg, args) == 0) {
+			arg_t *position = init_arg(T_INT);
+			position->value = index;
+			add_arg(&ret, position);
+		}
+	}
 	return ret;
 }
 
