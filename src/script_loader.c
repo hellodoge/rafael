@@ -4,6 +4,7 @@
 #include "include/execution.h"
 #include "include/terminate.h"
 #include "include/gc.h"
+#include "include/context.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -28,7 +29,7 @@ char *concat_with_lib_directory(const char *relative_path);
 
 arg_t *load_file(const char *relative_path) {
 	arg_t *ret = NULL;
-
+	init_context();
 	char *path;
 	if (working_directory != NULL)
 		path = concat_with_working_directory(relative_path);
@@ -89,6 +90,7 @@ err:
 	if (working_directory != NULL)
 		remove_working_directory();
 	free(path);
+	delete_context();
 	return ret != NULL ? ret : init_arg(T_NULL);
 }
 

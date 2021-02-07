@@ -6,10 +6,11 @@
 
 
 int main(int argc, char *argv[]) {
-	init_context();
 	int ret_value = 0;
 	if (argc == 1) {
+		init_context();
 		ret_value = repl();
+		delete_context();
 	} else {
 		for (int i = 1; i < argc; i++) {
 			arg_t *res = load_file(argv[i]);
@@ -21,6 +22,5 @@ int main(int argc, char *argv[]) {
 			delete(res);
 		}
 	}
-	delete_context();
 	return ret_value;
 }
