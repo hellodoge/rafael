@@ -43,7 +43,7 @@ arg_t *load_file(const char *relative_path) {
 			EXCEPTION(ret, "File %s doesn't seem to exist", relative_path);
 		}
 	}
-	set_working_directory(path);
+	bool wd_is_set = set_working_directory(path);
 
 	FILE *fp = fopen(path, "r");
 	if (fp == NULL) {
@@ -86,7 +86,7 @@ arg_t *load_file(const char *relative_path) {
 	}
 	free(buffer);
 err:
-	if (working_directory != NULL)
+	if (wd_is_set)
 		remove_working_directory();
 	free(path);
 	return ret != NULL ? ret : init_arg(T_NULL);
