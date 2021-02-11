@@ -95,6 +95,8 @@ arg_t *fnc_search(const arg_t *args);
 
 arg_t *fnc_in(const arg_t *args);
 
+arg_t *fnc_additive_inverse(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
@@ -105,6 +107,7 @@ const fnc_t predefined[] = {
 		{"int",     fnc_to_int},
 		{"real",    fnc_to_real},
 		{"+",       fnc_sum},
+		{"-",       fnc_additive_inverse},
 		{"sum",     fnc_sum},
 		{"*",       fnc_mul},
 		{"mul",     fnc_mul},
@@ -749,6 +752,26 @@ arg_t *fnc_sum(const arg_t *args) {
 			ret->floating += get_real(arg);
 	} else {
 		EXCEPTION(ret, "sum: invalid arguments");
+	}
+err:
+	return ret;
+}
+
+arg_t *fnc_additive_inverse(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, F_NUMBER | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "-: invalid arguments");
+	}
+	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
+		arg_t *current = NULL;
+		if (arg->type == T_INT) {
+			current = init_arg(T_INT);
+			current->value = -arg->value;
+		} else { // if (arg->type == T_REAL)
+			current = init_arg(T_REAL);
+			current->floating = -arg->floating;
+		}
+		add_arg(&ret, current);
 	}
 err:
 	return ret;
