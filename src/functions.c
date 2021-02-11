@@ -93,6 +93,8 @@ arg_t *fnc_type(const arg_t *args);
 
 arg_t *fnc_search(const arg_t *args);
 
+arg_t *fnc_in(const arg_t *args);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
@@ -118,6 +120,7 @@ const fnc_t predefined[] = {
 		{"==",      fnc_equal},
 		{"<>",      fnc_not_equal},
 		{"!=",      fnc_not_equal},
+		{"in",      fnc_in},
 		{"join",    fnc_join},
 		{"repeat",  fnc_repeat},
 		{"replace", fnc_replace},
@@ -695,6 +698,16 @@ arg_t *fnc_not_equal(const arg_t *args) {
 	return ret;
 }
 
+arg_t *fnc_in(const arg_t *args) {
+	arg_t *ret = init_arg(T_INT);
+	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+		if (compare(args, arg) == 0.f) {
+			ret->value = 1;
+			break;
+		}
+	}
+	return ret;
+}
 
 arg_t *fnc_to_int(const arg_t *args) {
 	arg_t *ret = NULL;
