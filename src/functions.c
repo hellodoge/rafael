@@ -249,13 +249,13 @@ err:
 }
 
 arg_t *ctrl_while(const arg_t *args) {
-	arg_t *ret = init_arg(T_INT),
+	arg_t *ret = NULL,
 			*cnd = NULL,
 			*res = NULL;
 	if (!args_match_pattern(args, F_NUMBER | T_STATEMENT, T_STATEMENT | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "while: invalid arguments")
 	}
-	for (;; ret->value++) {
+	for (;;) {
 
 		double condition;
 		if (args->type == T_STATEMENT) {
@@ -275,7 +275,7 @@ arg_t *ctrl_while(const arg_t *args) {
 		cnd = NULL;
 		res = execute_inner_stm(ctrl_exec, args->next, true);
 		RETURN_IF_TERMINATE(ret, res)
-		delete(res);
+		add_arg(&ret, res);
 		res = NULL;
 	}
 err:
