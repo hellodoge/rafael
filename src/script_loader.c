@@ -19,7 +19,7 @@ struct working_directory_list { //LIFO
 
 struct working_directory_list *working_directory = NULL;
 
-void set_working_directory(char *path_to_file);
+bool set_working_directory(char *path_to_file);
 
 void remove_working_directory(void);
 
@@ -44,7 +44,7 @@ arg_t *load_file(const char *relative_path) {
 			EXCEPTION(ret, "File %s doesn't seem to exist", relative_path);
 		}
 	}
-	set_working_directory(path);
+	bool wd_is_set = set_working_directory(path);
 
 	FILE *fp = fopen(path, "r");
 	if (fp == NULL) {
@@ -87,7 +87,7 @@ arg_t *load_file(const char *relative_path) {
 	}
 	free(buffer);
 err:
-	if (working_directory != NULL)
+	if (wd_is_set)
 		remove_working_directory();
 	free(path);
 	delete_context();
@@ -96,7 +96,7 @@ err:
 
 typedef struct working_directory_list working_directory_list_t;
 
-void set_working_directory(char *path_to_file) {
+bool set_working_directory(char *path_to_file) {
 	/// safety: path_to_file must be valid
 	/// if path_to_file doesn't contain slashes, it won't set working_directory
 	char *path;
@@ -104,13 +104,15 @@ void set_working_directory(char *path_to_file) {
 		char *slash = strrchr(path_to_file, '/');
 		char *backslash = strrchr(path_to_file, '\\');
 		char *last_slash = slash > backslash ? slash : backslash;
-		if (last_slash == NULL) return;
+		if (last_slash == NULL)
+			return false;
 		path = strndup(path_to_file, last_slash - path_to_file + 1);
 	}
 	struct working_directory_list *current = malloc(sizeof(working_directory_list_t));
 	current->prev = working_directory;
 	current->path = path;
 	working_directory = current;
+	return true;
 }
 
 void remove_working_directory(void) {
