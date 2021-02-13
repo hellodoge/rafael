@@ -5,7 +5,7 @@
 #include "include/gc.h"
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, const char *argv[]) {
 	int ret_value = 0;
 	if (argc == 1) {
 		init_context();
