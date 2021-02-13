@@ -1,8 +1,8 @@
 (def println
-	(print
-		(str
-			(join ' ' &args)
-			'\n'
-		)
-	)
+    (print
+        (str
+            (join ' ' &args)
+            '\n'
+        )
+    )
 )

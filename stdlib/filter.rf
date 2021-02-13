@@ -1,16 +1,16 @@
 (def filter f
-	(if (+ (!= (len &f) 1)
-	       (!= (type &f) lambda)
-	    )
-		(raise "filter: invalid arguments")
-	)
-	(set a)
-	(null
-		(for x &args
-			(if (run &f (get x))
-				(set a &a &x)
-			)
-		)
-	)
-	(ret &a)
+    (if (+ (!= (len &f) 1)
+           (!= (type &f) lambda)
+        )
+        (raise "filter: invalid arguments")
+    )
+    (set a)
+    (null
+        (for x &args
+            (if (run &f (get x))
+                (set a &a &x)
+            )
+        )
+    )
+    (ret &a)
 )
