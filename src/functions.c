@@ -252,27 +252,24 @@ arg_t *ctrl_while(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL,
 			*res = NULL;
-	if (!args_match_pattern(args, F_NUMBER | T_STATEMENT, T_STATEMENT | F_MULTIPLE, F_END)) {
+	if (!args_match_pattern(args, T_STATEMENT, T_STATEMENT | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "while: invalid arguments")
 	}
 	for (;;) {
 
 		double condition;
-		if (args->type == T_STATEMENT) {
-			cnd = execute(args->statement);
-			RETURN_IF_TERMINATE(ret, cnd);
-			if (!args_match_pattern(cnd, F_NUMBER, F_END)) {
-				EXCEPTION(ret, "while: invalid condition")
-			}
-			condition = get_real(cnd);
-		} else {
-			condition = get_real(args);
+		cnd = execute(args->statement);
+		RETURN_IF_TERMINATE(ret, cnd);
+		if (!args_match_pattern(cnd, F_NUMBER, F_END)) {
+			EXCEPTION(ret, "while: invalid condition")
 		}
+		condition = get_real(cnd);
+		delete(cnd);
+		cnd = NULL;
 
 		if (condition == 0.f)
 			goto err;
-		delete(cnd);
-		cnd = NULL;
+
 		res = execute_inner_stm(ctrl_exec, args->next, true);
 		RETURN_IF_TERMINATE(ret, res)
 		add_arg(&ret, res);
