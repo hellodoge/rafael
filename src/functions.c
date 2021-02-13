@@ -179,7 +179,7 @@ arg_t *ctrl_if(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL;
 	EXCEPTION_IF_UNKNOWN_KEYWORDS("if", ret, args, "else");
-	if (!args_match_pattern(args, F_BOOLEAN, T_STATEMENT | F_MULTIPLE, T_TOKEN | F_OPTIONAL,
+	if (!args_match_pattern(args, F_NUMBER | T_STATEMENT, T_STATEMENT | F_MULTIPLE, T_TOKEN | F_OPTIONAL,
 	                        T_STATEMENT | F_MULTIPLE | F_OPTIONAL, F_END)) {
 		EXCEPTION(ret, "if: invalid arguments")
 	}
@@ -252,7 +252,7 @@ arg_t *ctrl_while(const arg_t *args) {
 	arg_t *ret = init_arg(T_INT),
 			*cnd = NULL,
 			*res = NULL;
-	if (!args_match_pattern(args, F_BOOLEAN, T_STATEMENT | F_MULTIPLE, F_END)) {
+	if (!args_match_pattern(args, F_NUMBER | T_STATEMENT, T_STATEMENT | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "while: invalid arguments")
 	}
 	for (;; ret->value++) {
