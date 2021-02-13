@@ -175,26 +175,6 @@ err:
 	return ret;
 }
 
-arg_t *fnc_cond(const arg_t *arg) {
-	arg_t *ret = NULL,
-			*cnd = NULL;
-	if (arg->type & T_STATEMENT) {
-		cnd = execute(arg->statement);
-		RETURN_IF_TERMINATE(ret, cnd)
-	} else
-		cnd = copy_arg(arg, true);
-	if (!args_match_pattern(cnd, F_NUMBER | F_MULTIPLE | F_OPTIONAL, F_END)) {
-		EXCEPTION(ret, "condition: invalid arguments")
-	}
-
-	arg_t *tmp = execute_inner_stm(fnc_to_real, cnd, true);
-	add_arg(&ret, execute_inner_stm(fnc_sum, tmp, true));
-	delete(tmp);
-err:
-	delete(cnd);
-	return ret;
-}
-
 arg_t *ctrl_if(const arg_t *args) {
 	arg_t *ret = NULL,
 			*cnd = NULL;
@@ -204,10 +184,19 @@ arg_t *ctrl_if(const arg_t *args) {
 		EXCEPTION(ret, "if: invalid arguments")
 	}
 
-	cnd = execute_inner_stm(fnc_cond, args, false);
-	RETURN_IF_TERMINATE(ret, cnd)
+	double condition;
+	if (args->type == T_STATEMENT) {
+		cnd = execute(args->statement);
+		RETURN_IF_TERMINATE(ret, cnd);
+		if (!args_match_pattern(cnd, F_NUMBER, F_END)) {
+			EXCEPTION(ret, "if: invalid condition")
+		}
+		condition = get_real(cnd);
+	} else {
+		condition = get_real(args);
+	}
 
-	if (cnd->floating != 0) {
+	if (condition != 0.f) {
 		ret = execute_inner_stm(ctrl_exec, args->next, true);
 		if (ret->type & F_TERMINATE)
 			goto err;
@@ -267,9 +256,20 @@ arg_t *ctrl_while(const arg_t *args) {
 		EXCEPTION(ret, "while: invalid arguments")
 	}
 	for (;; ret->value++) {
-		cnd = execute_inner_stm(fnc_cond, args, false);
-		RETURN_IF_TERMINATE(ret, cnd)
-		if (cnd->floating == 0)
+
+		double condition;
+		if (args->type == T_STATEMENT) {
+			cnd = execute(args->statement);
+			RETURN_IF_TERMINATE(ret, cnd);
+			if (!args_match_pattern(cnd, F_NUMBER, F_END)) {
+				EXCEPTION(ret, "while: invalid condition")
+			}
+			condition = get_real(cnd);
+		} else {
+			condition = get_real(args);
+		}
+
+		if (condition == 0.f)
 			goto err;
 		delete(cnd);
 		cnd = NULL;
