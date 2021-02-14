@@ -395,6 +395,7 @@ arg_t *ctrl_try(const arg_t *args) {
 	if (ret->type == T_EXCEPTION) {
 		ret->type = T_STRING;
 		add_var_to_context(strdup("error"), err_rc, ret);
+		ret = NULL;
 		arg_t catch_tok = {T_TOKEN, "catch"};
 		const arg_t *catch_statement = get_next_to_given(args->next, &catch_tok);
 		if (catch_statement == NULL)
