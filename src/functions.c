@@ -456,7 +456,7 @@ arg_t *fnc_to_str(const arg_t *args) {
 			if (get_real(arg) == 0)
 				len++;
 			else {
-				len += ceil(log10(get_real(arg))) + 1;
+				len += ceil(log10(fabs(get_real(arg)))) + 1;
 				if (get_real(arg) < 0) len++;
 			}
 			if (arg->type & T_REAL)
