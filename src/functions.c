@@ -362,16 +362,20 @@ err:
 }
 
 arg_t *ctrl_exec(const arg_t *args) {
-	arg_t *ret = NULL;
+	arg_t *ret = NULL,
+	      *res = NULL;
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
 		if (arg->type & T_STATEMENT) {
-			arg_t *res = execute(arg->statement);
+			res = execute(arg->statement);
 			RETURN_IF_TERMINATE(ret, res)
 			add_arg(&ret, res);
+			res = NULL;
 		} else
 			break;
 	}
 err:
+	if (res != NULL)
+		delete(res);
 	return ret;
 }
 
