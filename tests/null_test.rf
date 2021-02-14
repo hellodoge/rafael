@@ -1,0 +1,17 @@
+(def null_test desc
+    (if (len (null &args))
+        (raise &desc)
+    )
+)
+
+(null_test "int" 123)
+
+(null_test "real" 12.3)
+
+(null_test "null")
+
+(null_test "string" 'foo')
+
+(null_test "token" bar)
+
+(null_test "lambda" (lambda (null)))

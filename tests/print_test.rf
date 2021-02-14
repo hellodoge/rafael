@@ -1,0 +1,7 @@
+(import "assert.rf")
+
+(try (print (lambda (null))))
+(assert (len &error) "type checking passed: lambda")
+
+(try (print 'foo' (lambda (null)) 'bar'))
+(assert (len &error) "type checking passed: lambda between string args")

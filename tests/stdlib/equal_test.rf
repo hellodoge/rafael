@@ -1,0 +1,23 @@
+(import "equal.rf" "assert.rf")
+
+(assert (equal (ret 1 2 3) 1 2 3) 'equal int args')
+
+(assert (equal (ret 1.2 3.4) 1.2 3.4) 'equal real args')
+
+(assert (equal (ret 'abc' 'cde') 'abc' 'cde') 'equal string args')
+
+(assert (equal (ret foo bar) foo bar) 'equal token args')
+
+(assert (== 0 (equal (ret 1 2 3) 1 2)) 'different length')
+
+(assert (== 0 (equal (ret 1 2 3) 1 5 3)) 'not equal int args')
+
+(assert (== 0 (equal (ret 1.2 3.4) 1.5 3.4)) 'not equal real args')
+
+(assert (== 0 (equal (ret 'abc' 'cdf') 'abc' 'cde')) 'not equal string args')
+
+(assert (== 0 (equal (ret foo bar) foo var)) 'not equal token args')
+
+(assert (equal (ret 1 2.3 'foo' bar) 1 2.3 'foo' bar) 'equal int real string token')
+
+(assert (== 0 (equal (lambda (null)) (lambda (null)))) 'cannot compare lambdas')

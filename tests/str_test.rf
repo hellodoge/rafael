@@ -1,0 +1,16 @@
+(import "equal.rf" "assert.rf")
+
+(assert (equal (str 'foo' 'bar') 'foobar') 'string string')
+
+(assert (equal (str foo bar) 'foobar') 'tok tok')
+
+(assert (equal (str 'foo' 123) 'foo123') 'string int')
+
+(assert (equal (str 'foo' 12.3) 'foo12.300000') 'string real')
+
+(assert (equal (str) '') 'null')
+
+(assert (equal (str 123 456) '123456') 'int int')
+
+(try (str (lambda (null))))
+(assert (len &error) "type checking passed: lambda")

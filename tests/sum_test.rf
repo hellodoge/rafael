@@ -1,0 +1,59 @@
+(import "assert.rf" "equal.rf")
+
+(assert (equal (sum 123 456) 579) "int + int")
+
+(assert (equal (sum 123 4.56) 127.56) "int + real")
+
+(assert (equal (sum 12.3 4.56) 16.86) "real + real")
+
+(assert (equal (sum 123 4.56 789) 916.56) "int + real + int")
+
+(assert (equal (sum 123 -456) -333) "int - int")
+
+(assert (equal (sum 123 -4.56) 118.44) "int - real")
+
+(assert (equal (sum 12.3 -45.6) -33.3) "real - real")
+
+(assert (equal (sum 123 -4.56 -7.89) 110.55) "int - real - int")
+
+(try (sum 1 -2 3.4 -5.6))
+(assert (== 0 (len &error)) "type checking failed: int real" &error)
+
+(try (sum))
+(assert (== 0 (len &error)) "type checking failed: null" &error)
+
+(try (sum "foo"))
+(assert (len &error) "type checking passed: string")
+
+(try (sum "foo" 12 3.4))
+(assert (len &error) "type checking passed: string int real")
+
+(try (sum 12 "foo" 3.4))
+(assert (len &error) "type checking passed: int string real")
+
+(try (sum 12 3.4 "foo"))
+(assert (len &error) "type checking passed: int real string")
+
+(try (sum bar))
+(assert (len &error) "type checking passed: token")
+
+(try (sum bar 12 3.4))
+(assert (len &error) "type checking passed: token int real")
+
+(try (sum 12 bar 3.4))
+(assert (len &error) "type checking passed: int token real")
+
+(try (sum 12 3.4 bar))
+(assert (len &error) "type checking passed: int real token")
+
+(try (sum (lambda (null))))
+(assert (len &error) "type checking passed: lambda")
+
+(try (sum (lambda (null)) 12 3.4))
+(assert (len &error) "type checking passed: lambda int real")
+
+(try (sum 12 (lambda (null)) 3.4))
+(assert (len &error) "type checking passed: int lambda real")
+
+(try (sum 12 3.4 (lambda (null))))
+(assert (len &error) "type checking passed: int real lambda")

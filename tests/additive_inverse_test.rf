@@ -1,0 +1,51 @@
+(import "assert.rf" "equal.rf")
+
+(assert (equal (- 123) -123) "(- int)")
+
+(assert (equal (- 4.56) -4.56) "(- real)")
+
+(assert (equal (- -123) 123) "(- -int)")
+
+(assert (equal (- -4.56) 4.56) "(- -real)")
+
+(try (- 1 -2 3.4 -5.6))
+(assert (== 0 (len &error)) "type checking failed: int real" &error)
+
+(try (-))
+(assert (== 0 (len &error)) "type checking failed: null" &error)
+
+(try (- "foo"))
+(assert (len &error) "type checking passed: string")
+
+(try (- "foo" 12 3.4))
+(assert (len &error) "type checking passed: string int real")
+
+(try (- 12 "foo" 3.4))
+(assert (len &error) "type checking passed: int string real")
+
+(try (- 12 3.4 "foo"))
+(assert (len &error) "type checking passed: int real string")
+
+(try (- bar))
+(assert (len &error) "type checking passed: token")
+
+(try (- bar 12 3.4))
+(assert (len &error) "type checking passed: token int real")
+
+(try (- 12 bar 3.4))
+(assert (len &error) "type checking passed: int token real")
+
+(try (- 12 3.4 bar))
+(assert (len &error) "type checking passed: int real token")
+
+(try (- (lambda (null))))
+(assert (len &error) "type checking passed: lambda")
+
+(try (- (lambda (null)) 12 3.4))
+(assert (len &error) "type checking passed: lambda int real")
+
+(try (- 12 (lambda (null)) 3.4))
+(assert (len &error) "type checking passed: int lambda real")
+
+(try (- 12 3.4 (lambda (null))))
+(assert (len &error) "type checking passed: int real lambda")

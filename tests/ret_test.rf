@@ -1,0 +1,21 @@
+(import "equal.rf")
+
+(def ret_test desc
+    (if (== 0 (equal (ret &args) &args))
+        (raise &desc)
+    )
+)
+
+(ret_test "int" 123)
+
+(ret_test "real" 12.3)
+
+(ret_test "null")
+
+(ret_test "string" 'foo')
+
+(ret_test "token" bar)
+
+(if (!= lambda (type (lambda (null))))
+    (raise "lambda")
+)

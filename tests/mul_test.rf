@@ -1,0 +1,51 @@
+(import "assert.rf" "equal.rf")
+
+(assert (equal (mul 123 456) 56088) "int * int")
+
+(assert (equal (mul 123 4.56) 560.88) "int * real")
+
+(assert (equal (mul 12.3 4.56) 56.088) "real * real")
+
+(assert (equal (mul 123 4.56 789) 442534.32) "int * real * int")
+
+(try (mul 1 -2 3.4 -5.6))
+(assert (== 0 (len &error)) "type checking failed: int real" &error)
+
+(try (mul))
+(assert (len &error) "type checking passed: null")
+
+(try (mul "foo"))
+(assert (len &error) "type checking passed: string")
+
+(try (mul "foo" 12 3.4))
+(assert (len &error) "type checking passed: string int real")
+
+(try (mul 12 "foo" 3.4))
+(assert (len &error) "type checking passed: int string real")
+
+(try (mul 12 3.4 "foo"))
+(assert (len &error) "type checking passed: int real string")
+
+(try (mul bar))
+(assert (len &error) "type checking passed: token")
+
+(try (mul bar 12 3.4))
+(assert (len &error) "type checking passed: token int real")
+
+(try (mul 12 bar 3.4))
+(assert (len &error) "type checking passed: int token real")
+
+(try (mul 12 3.4 bar))
+(assert (len &error) "type checking passed: int real token")
+
+(try (mul (lambda (null))))
+(assert (len &error) "type checking passed: lambda")
+
+(try (mul (lambda (null)) 12 3.4))
+(assert (len &error) "type checking passed: lambda int real")
+
+(try (mul 12 (lambda (null)) 3.4))
+(assert (len &error) "type checking passed: int lambda real")
+
+(try (mul 12 3.4 (lambda (null))))
+(assert (len &error) "type checking passed: int real lambda")

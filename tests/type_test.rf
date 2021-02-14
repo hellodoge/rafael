@@ -1,0 +1,19 @@
+(import "assert.rf" "equal.rf")
+
+(assert (equal (type 'foo') string) 'string')
+
+(assert (equal (type bar) token) 'token')
+
+(assert (equal (type 123) int) 'int')
+
+(assert (equal (type 4.56) real) 'real')
+
+(assert (equal (type (lambda (null))) lambda) 'lambda')
+
+(assert
+    (equal
+        (type 'foo' bar 123 4.56 (lambda (null)))
+        string token int real lambda
+    )
+    'string token int real lambda'
+)

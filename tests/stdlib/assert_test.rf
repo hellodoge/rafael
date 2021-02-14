@@ -1,0 +1,8 @@
+(import "assert.rf")
+
+(try (assert (== 0 1)))
+(if (!= 1 (len &error)) (raise 'must fail'))
+
+(try (assert (!= 0 1)))
+(if (len &error) (raise 'must pass'))
+
