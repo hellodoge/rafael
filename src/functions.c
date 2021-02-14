@@ -97,6 +97,8 @@ arg_t *fnc_in(const arg_t *args);
 
 arg_t *fnc_additive_inverse(const arg_t *args);
 
+arg_t *ctrl_try(const arg_t *arg);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
@@ -142,7 +144,8 @@ const fnc_t predefined[] = {
 		{"if",      ctrl_if,         FF_DO_NOT_EXECUTE_ARGS},
 		{"while",   ctrl_while,      FF_DO_NOT_EXECUTE_ARGS},
 		{"for",     ctrl_for,        FF_DO_NOT_EXECUTE_ARGS},
-		{"case",    ctrl_case,       FF_DO_NOT_EXECUTE_ARGS}
+		{"case",    ctrl_case,       FF_DO_NOT_EXECUTE_ARGS},
+		{"try",     ctrl_try,        FF_DO_NOT_EXECUTE_ARGS},
 };
 
 const fnc_t *get_predefined(const char *string) {
@@ -376,6 +379,31 @@ arg_t *ctrl_exec(const arg_t *args) {
 err:
 	if (res != NULL)
 		delete(res);
+	return ret;
+}
+
+arg_t *ctrl_try(const arg_t *args) {
+	arg_t *ret = NULL;
+	EXCEPTION_IF_UNKNOWN_KEYWORDS("try", ret, args, "catch");
+	if (!args_match_pattern(args, T_STATEMENT | F_MULTIPLE, T_TOKEN | F_OPTIONAL,
+	                        T_STATEMENT | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "try: invalid arguments")
+	}
+	ret = execute_inner_stm(ctrl_exec, args, true);
+	ref_counter_t *err_rc = init_ref_counter();
+	(*err_rc)--;
+	if (ret->type == T_EXCEPTION) {
+		ret->type = T_STRING;
+		add_var_to_context(strdup("error"), err_rc, ret);
+		arg_t catch_tok = {T_TOKEN, "catch"};
+		const arg_t *catch_statement = get_next_to_given(args->next, &catch_tok);
+		if (catch_statement == NULL)
+			goto err;
+		ret = execute_inner_stm(ctrl_exec, catch_statement, true);
+	} else {
+		add_var_to_context(strdup("error"), err_rc, init_arg(T_NULL));
+	}
+err:
 	return ret;
 }
 
