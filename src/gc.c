@@ -41,7 +41,8 @@ void delete_vars(var_t *var) {
 void forget(arg_t *arg) {
 	assert(arg->type & F_ALLOCATED);
 	assert(arg->content != NULL);
-	assert(arg->rc != NULL);
+	if (arg->rc == NULL)
+		return;
 	assert(*arg->rc > 0);
 	(*arg->rc)--;
 	if (*arg->rc == 0) {
@@ -60,7 +61,8 @@ void forget(arg_t *arg) {
 
 void raw_forget(void *data, ref_counter_t *rc) {
 	assert(data != NULL);
-	assert(rc != NULL);
+	if (rc == NULL)
+		return;
 	assert(*rc > 0);
 	(*rc)--;
 	if (*rc == 0) {

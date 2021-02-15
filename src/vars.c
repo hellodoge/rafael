@@ -29,7 +29,8 @@ void add_var(const char *name, ref_counter_t *rc, const arg_t *def, var_t **vars
 	}
 	current->name = name;
 	current->name_rc = rc;
-	(*current->name_rc)++;
+	if (current->name_rc != NULL)
+		(*current->name_rc)++;
 	current->def = def;
 }
 

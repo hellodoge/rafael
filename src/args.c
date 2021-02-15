@@ -71,8 +71,8 @@ arg_t *copy_arg(const arg_t *arg, bool copy_next) {
 	arg_t *copy = malloc(sizeof(arg_t));
 	*copy = *arg;
 	if (arg->type & F_ALLOCATED) {
-		assert(arg->rc != NULL);
-		(*arg->rc)++;
+		if (arg->rc != NULL)
+			(*arg->rc)++;
 	}
 	if (arg->next != NULL && copy_next)
 		copy->next = copy_arg(arg->next, true);

@@ -393,11 +393,9 @@ arg_t *ctrl_try(const arg_t *args) {
 		EXCEPTION(ret, "try: invalid arguments")
 	}
 	ret = execute_inner_stm(ctrl_exec, args, true);
-	ref_counter_t *err_rc = init_ref_counter();
-	(*err_rc)--;
 	if (ret->type == T_EXCEPTION) {
 		ret->type = T_STRING;
-		add_var_to_context(strdup("error"), err_rc, ret);
+		add_var_to_context("error", NULL, ret);
 		ret = NULL;
 		arg_t catch_tok = {T_TOKEN, "catch"};
 		const arg_t *catch_statement = get_next_to_given(args->next, &catch_tok);
@@ -405,7 +403,7 @@ arg_t *ctrl_try(const arg_t *args) {
 			goto err;
 		ret = execute_inner_stm(ctrl_exec, catch_statement, true);
 	} else {
-		add_var_to_context(strdup("error"), err_rc, init_arg(T_NULL));
+		add_var_to_context("error", NULL, init_arg(T_NULL));
 	}
 err:
 	return ret;
@@ -546,8 +544,9 @@ arg_t *fnc_type(const arg_t *args) {
 				EXCEPTION(ret, "type: cannot determine argument type")
 			}
 		}
-		arg_t *current = init_arg(T_TOKEN | F_ORIGINAL);
-		current->string = strdup(type);
+		arg_t *current = init_arg(T_TOKEN);
+		current->string = type;
+		assert(current->rc == NULL);
 		add_arg(&ret, current);
 	}
 err:
