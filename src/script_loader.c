@@ -103,12 +103,15 @@ typedef struct working_directory_list working_directory_list_t;
 bool set_working_directory(char *path_to_file) {
 	/// safety: path_to_file must be valid
 	/// if path_to_file doesn't contain slashes, it won't set working_directory
+	/// if current working_directory equals to new, it won't do it neither
 	char *path;
 	{
 		char *slash = strrchr(path_to_file, '/');
 		char *backslash = strrchr(path_to_file, '\\');
 		char *last_slash = slash > backslash ? slash : backslash;
-		if (last_slash == NULL)
+		if (last_slash == NULL ||
+		    (working_directory != NULL &&
+		     strncmp(working_directory->path, path_to_file, last_slash - path_to_file + 1) == 0))
 			return false;
 		path = strndup(path_to_file, last_slash - path_to_file + 1);
 	}
