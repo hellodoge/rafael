@@ -1,4 +1,4 @@
-(import "assert.rf" "equal.rf")
+(import assert equal)
 
 (assert (equal (- 123) -123) "(- int)")
 

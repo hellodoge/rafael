@@ -1,4 +1,4 @@
-(import "assert.rf")
+(import assert)
 
 (try (assert (== 0 1)))
 (if (!= 1 (len &error)) (raise 'must fail'))

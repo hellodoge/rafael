@@ -1,4 +1,4 @@
-(import "equal.rf" "assert.rf")
+(import equal assert)
 
 (assert (equal (ret 1 2 3) 1 2 3) 'equal int args')
 

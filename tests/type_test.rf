@@ -1,4 +1,4 @@
-(import "assert.rf" "equal.rf")
+(import assert equal)
 
 (assert (equal (type 'foo') string) 'string')
 

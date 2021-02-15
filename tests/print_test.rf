@@ -1,4 +1,4 @@
-(import "assert.rf")
+(import assert)
 
 (try (print (lambda (null))))
 (assert (len &error) "type checking passed: lambda")

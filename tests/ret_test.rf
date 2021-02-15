@@ -1,4 +1,4 @@
-(import "equal.rf")
+(import equal)
 
 (def ret_test desc
     (if (== 0 (equal (ret &args) &args))

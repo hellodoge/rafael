@@ -1,4 +1,4 @@
-(import "assert.rf" "equal.rf")
+(import assert equal)
 
 (assert (equal (sum 123 456) 579) "int + int")
 
