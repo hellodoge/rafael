@@ -30,7 +30,7 @@ int main(int argc, const char *argv[]) {
 				if (flags & F_TEST) {
 					fprintf(stderr, "Running test: %s ", argv[i]);
 				}
-				arg_t *res = load_file(argv[i]);
+				arg_t *res = load_file(argv[i], false);
 				if (flags & F_TEST) {
 					fprintf(stderr, "%c%s%c[0m", 27,
 							res->type != T_EXCEPTION ?

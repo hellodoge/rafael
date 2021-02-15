@@ -857,11 +857,11 @@ err:
 arg_t *fnc_import(const arg_t *args) {
 	arg_t *ret = NULL,
 	      *res = NULL;
-	if (!args_match_pattern(args, T_STRING | F_MULTIPLE, F_END)) {
+	if (!args_match_pattern(args, T_STRING | T_TOKEN | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "import: invalid arguments");
 	}
 	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
-		res = load_file(arg->string);
+		res = load_file(arg->string, arg->type == T_TOKEN);
 		RETURN_IF_TERMINATE(ret, res);
 		add_arg(&ret, res);
 		res = NULL;

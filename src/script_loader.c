@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <assert.h>
+#include <stdbool.h>
 
 struct working_directory_list { //LIFO
 	char *path;
@@ -25,25 +26,28 @@ void remove_working_directory(void);
 
 char *concat_with_working_directory(const char *relative_path);
 
-char *concat_with_lib_directory(const char *relative_path);
+char *concat_with_lib_directory_and_rf_extension(const char *relative_path);
 
-arg_t *load_file(const char *relative_path) {
+arg_t *load_file(const char *relative_path, bool search_in_lib_dir) {
 	arg_t *ret = NULL;
 	init_context();
 	char *path;
-	if (working_directory != NULL)
-		path = concat_with_working_directory(relative_path);
-	else
-		path = strdup(relative_path);
-	if (access(path, F_OK) != 0) {
-		free(path);
-		path = concat_with_lib_directory(relative_path);
+	if (search_in_lib_dir) {
+		path = concat_with_lib_directory_and_rf_extension(relative_path);
 		if (path == NULL) {
-			EXCEPTION(ret, "File %s doesn't seem to exist (cannot obtain library)", relative_path);
-		} if (access(path, F_OK) != 0) {
-			EXCEPTION(ret, "File %s doesn't seem to exist", relative_path);
+			EXCEPTION(ret, "Cannot obtain library");
 		}
+	} else {
+		if (working_directory != NULL)
+			path = concat_with_working_directory(relative_path);
+		else
+			path = strdup(relative_path);
 	}
+
+	if (access(path, F_OK) != 0) {
+		EXCEPTION(ret, "File %s doesn't seem to exist", relative_path);
+	}
+
 	bool wd_is_set = set_working_directory(path);
 
 	FILE *fp = fopen(path, "r");
@@ -131,7 +135,7 @@ char *concat_with_working_directory(const char *relative_path) {
 	return path;
 }
 
-char *concat_with_lib_directory(const char *relative_path) {
+char *concat_with_lib_directory_and_rf_extension(const char *relative_path) {
 #ifndef _WIN32
 #define LIB_FOLDER "/.local/lib/rafael/"
 	char *basedir = getenv("HOME");
@@ -143,8 +147,10 @@ char *concat_with_lib_directory(const char *relative_path) {
 	if (basedir == NULL)
 		return NULL;
 #endif
-	char *path = malloc((strlen(basedir) + strlen(relative_path)) * sizeof(char) + sizeof(LIB_FOLDER));
+	char *path = malloc(
+			(strlen(basedir) + strlen(relative_path)) * sizeof(char) +
+			sizeof(LIB_FOLDER) + sizeof(".rf") - 1);
 	*path = '\0';
-	return strcat(strcat(strcat(path, basedir), LIB_FOLDER), relative_path);
+	return strcat(strcat(strcat(strcat(path, basedir), LIB_FOLDER), relative_path), ".rf");
 #undef LIB_FOLDER
 }
