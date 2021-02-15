@@ -287,42 +287,45 @@ err:
 }
 
 arg_t *ctrl_for(const arg_t *args) {
-	arg_t *ret = NULL;
-	const arg_t *stm = NULL;
-	arg_t *argv = NULL;
-	if (args->type != T_TOKEN) {
-		EXCEPTION(ret, "for: variable name not found");
+	arg_t *ret = NULL,
+	      *seq = NULL;
+	const arg_t *stm_p = NULL;
+
+	if (args_match_pattern(args, T_TOKEN,
+	                       F_NUMBER | T_STRING | T_TOKEN | T_LAMBDA | F_MULTIPLE,
+	                       T_STATEMENT | F_MULTIPLE, F_END
+	)) {
+		for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+			if (arg->type == T_STATEMENT) {
+				stm_p = arg;
+				break;
+			}
+			add_arg(&seq, copy_arg(arg, false));
+		}
+	} else if (args_match_pattern(args, T_TOKEN, T_STATEMENT, T_STATEMENT | F_MULTIPLE, F_END)) {
+		assert(args->next->type == T_STATEMENT);
+		seq = execute(args->next->statement);
+		RETURN_IF_TERMINATE(ret, seq);
+		assert(args->next->next->type == T_STATEMENT);
+		stm_p = args->next->next;
+	} else {
+		EXCEPTION(ret, "for: invalid arguments");
 	}
-	const arg_t *var_name = args;
-	if (args->next == NULL) {
-		EXCEPTION(ret, "for: invalid arguments")
-	}
-	args = args->next;
-	if (args->type == T_STATEMENT) {
-		argv = execute(args->statement);
-		RETURN_IF_TERMINATE(ret, argv);
-	}
-	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
-		if (arg->type == T_STATEMENT) {
-			stm = arg;
-			break;
-		} else if (args->type != T_STATEMENT)
-			add_arg(&argv, copy_arg(arg, false));
-	}
-	if (stm == NULL) {
-		EXCEPTION(ret, "for: statement not found");
-	}
-	for (const arg_t *arg = argv; arg != NULL; arg = arg->next) {
-		if (arg->type == T_STATEMENT)
-			goto err;
-		set_var_globally(var_name->string, var_name->rc, copy_arg(arg, false));
-		arg_t *res = execute_inner_stm(ctrl_exec, stm, true);
-		RETURN_IF_TERMINATE(ret, res);
+	assert(stm_p != NULL);
+	assert(args->type == T_TOKEN);
+	for (arg_t *val = seq; val != NULL; val = seq) {
+		seq = val->next;
+		val->next = NULL;
+		add_var_to_context(args->string, args->rc, val);
+		arg_t *res = execute_inner_stm(ctrl_exec, stm_p, true);
 		add_arg(&ret, res);
+		if (res->type & F_TERMINATE)
+			break;
 	}
+
 err:
-	if (argv != NULL)
-		delete(argv);
+	if (seq != NULL)
+		delete(seq);
 	return ret;
 }
 
