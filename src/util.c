@@ -71,3 +71,13 @@ void print_error(const char *message) {
 	fprintf(stderr, "Error! %s\n", message);
 }
 
+char *read_file_to_string(const char *path) {
+	FILE *fp = fopen(path, "r");
+	if (fp == NULL)
+		return NULL;
+	char *buffer = strdup(""); //return empty string if file is empty
+	size_t len = sizeof("");
+	getdelim(&buffer, &len, '\0', fp);
+	fclose(fp);
+	return buffer;
+}

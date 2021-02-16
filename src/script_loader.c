@@ -5,8 +5,8 @@
 #include "include/terminate.h"
 #include "include/gc.h"
 #include "include/context.h"
+#include "include/util.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -50,19 +50,11 @@ arg_t *load_file(const char *relative_path, bool search_in_lib_dir) {
 
 	bool wd_is_set = set_working_directory(path);
 
-	FILE *fp = fopen(path, "r");
-	if (fp == NULL) {
-		EXCEPTION(ret, "Error opening file %s", relative_path);
+	char *buffer = read_file_to_string(path);
+	if (buffer == NULL) {
+		EXCEPTION(ret, "Failed opening file %s", relative_path);
 	}
-	char *buffer = NULL;
-	{
-		size_t len;
-		if (getdelim(&buffer, &len, '\0', fp) == -1) {
-			fclose(fp);
-			EXCEPTION(ret, "Failed reading file %s", relative_path);
-		}
-	}
-	fclose(fp);
+
 	for (char *text = buffer;;) {
 		stm_t *stm = parse((const char **) &text);
 		if (stm == NULL)
