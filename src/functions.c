@@ -99,11 +99,14 @@ arg_t *fnc_additive_inverse(const arg_t *args);
 
 arg_t *ctrl_try(const arg_t *arg);
 
+arg_t *fnc_read(const arg_t *arg);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
 		{"print",   fnc_print},
 		{"input",   fnc_input},
+		{"read",    fnc_read},
 		{"type",    fnc_type},
 		{"str",     fnc_to_str},
 		{"int",     fnc_to_int},
@@ -517,6 +520,24 @@ arg_t *fnc_input(const arg_t *args) {
 }
 
 #pragma clang diagnostic pop
+
+arg_t *fnc_read(const arg_t *args) {
+	arg_t *ret = NULL;
+	if (!args_match_pattern(args, T_STRING | F_MULTIPLE | F_OPTIONAL, F_END)) {
+		EXCEPTION(ret, "read: invalid arguments");
+	}
+	for (const arg_t *arg = args; arg != NULL; arg = arg->next) {
+		const char *content = read_file_to_string(arg->string);
+		if (content == NULL) {
+			EXCEPTION(ret, "read: failed opening file %s", arg->string);
+		}
+		arg_t *current = init_arg(T_STRING | F_ORIGINAL);
+		current->string = content;
+		add_arg(&ret, current);
+	}
+err:
+	return ret;
+}
 
 arg_t *fnc_type(const arg_t *args) {
 	arg_t *ret = NULL;
