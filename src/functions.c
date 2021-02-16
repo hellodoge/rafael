@@ -101,12 +101,15 @@ arg_t *ctrl_try(const arg_t *arg);
 
 arg_t *fnc_read(const arg_t *arg);
 
+arg_t *fnc_write(const arg_t *arg);
+
 const fnc_t predefined[] = {
 		{"null",    fnc_null},
 		{"ret",     fnc_return},
 		{"print",   fnc_print},
 		{"input",   fnc_input},
 		{"read",    fnc_read},
+		{"write",   fnc_write},
 		{"type",    fnc_type},
 		{"str",     fnc_to_str},
 		{"int",     fnc_to_int},
@@ -536,6 +539,27 @@ arg_t *fnc_read(const arg_t *args) {
 		add_arg(&ret, current);
 	}
 err:
+	return ret;
+}
+
+arg_t *fnc_write(const arg_t *args) {
+	arg_t *ret = NULL;
+	FILE *fp = NULL;
+	if (!args_match_pattern(args, T_STRING | F_MULTIPLE, F_END)) {
+		EXCEPTION(ret, "write: invalid arguments");
+	}
+	fp = fopen(args->string, "w");
+	if (fp == NULL) {
+		EXCEPTION(ret, "write: failed opening file %s", args->string);
+	}
+	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+		if (fputs(arg->string, fp) == EOF) {
+			EXCEPTION(ret, "write: failed writing to file %s", args->string);
+		}
+	}
+err:
+	if (fp != NULL)
+		fclose(fp);
 	return ret;
 }
 
