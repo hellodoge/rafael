@@ -545,14 +545,17 @@ err:
 arg_t *fnc_write(const arg_t *args) {
 	arg_t *ret = NULL;
 	FILE *fp = NULL;
-	if (!args_match_pattern(args, T_STRING | F_MULTIPLE, F_END)) {
+	EXCEPTION_IF_UNKNOWN_KEYWORDS("write", ret, args, "new");
+	if (!args_match_pattern(args, T_TOKEN | F_OPTIONAL, T_STRING | F_MULTIPLE, F_END)) {
 		EXCEPTION(ret, "write: invalid arguments");
 	}
-	fp = fopen(args->string, "w");
+	bool erase = args->type == T_TOKEN;
+	fp = fopen(erase ? args->next->string : args->string, erase ? "w" : "a");
 	if (fp == NULL) {
 		EXCEPTION(ret, "write: failed opening file %s", args->string);
 	}
-	for (const arg_t *arg = args->next; arg != NULL; arg = arg->next) {
+	const arg_t *seq_p = erase ? args->next->next : args->next;
+	for (const arg_t *arg = seq_p; arg != NULL; arg = arg->next) {
 		if (fputs(arg->string, fp) == EOF) {
 			EXCEPTION(ret, "write: failed writing to file %s", args->string);
 		}
