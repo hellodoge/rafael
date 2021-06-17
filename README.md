@@ -37,6 +37,26 @@ Input height of triangle: 5
  1   4   6   4   1
 ```
 
+### REPL
+```
+$ rafael
+--> (set is_negative (lambda x (< &x 0)))
+(lambda)
+--> (set a
+...     (for x (range 1 11)
+...         (if (== (type (/ &x 2)) int)
+...             (get x)
+...         else
+...             (- &x)
+... )))
+(-1 2 -3 4 -5 6 -7 8 -9 10)
+--> (filter)
+Error! No macro specified by filter
+--> (import filter)
+--> (filter &is_negative &a)
+(-1 -3 -5 -7 -9)
+```
+
 ### Installation (Linux)
 ```
 rm -rf /tmp/rafael_repo
