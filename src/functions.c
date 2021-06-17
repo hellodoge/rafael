@@ -312,6 +312,8 @@ arg_t *ctrl_for(const arg_t *args) {
 		assert(args->next->type == T_STATEMENT);
 		seq = execute(args->next->statement);
 		RETURN_IF_TERMINATE(ret, seq);
+		if (seq->type == T_NULL)
+		    goto err;
 		assert(args->next->next->type == T_STATEMENT);
 		stm_p = args->next->next;
 	} else {
