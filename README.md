@@ -1,5 +1,41 @@
-### The Rafael Programming Language
-Rafael is an exprerimental scripting programming language. It has a lisp like syntax and is memory safe by default.
+## The Rafael Programming Language
+Rafael is an exprerimental scripting programming language.\
+It has a lisp like syntax and is memory safe by default.
+
+### Example
+The following program outputs [Pascal's Triangle](https://en.wikipedia.org/wiki/Pascal%27s_triangle)
+```
+(import range)
+
+(def print_triangle height
+    (for x (range &height)
+        (print (repeat (+ &height (- &x)) ' '))
+        (set numbers 1)
+        (for y (range 1 (+ &x 1))
+            (set last (index -1 &numbers))
+            (set numbers &numbers
+                (/ (* &last (+ &x (- &y) 1)) &y)
+            )
+        )
+        (print (join ' ' &numbers) '\n')
+    )
+)
+
+(print "Input height of triangle: ")
+(print_triangle (int (input)))
+```
+
+### Usage
+```
+$ rafael triangle.rf
+Input height of triangle: 5
+
+         1
+       1   1
+     1   2   1
+   1   3   3   1
+ 1   4   6   4   1
+```
 
 ### Installation (Linux)
 ```
