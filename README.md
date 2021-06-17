@@ -42,6 +42,7 @@ Input height of triangle: 5
 $ rafael
 --> (set is_negative (lambda x (< &x 0)))
 (lambda)
+--> (import range)
 --> (set a
 ...     (for x (range 1 11)
 ...         (if (== (type (/ &x 2)) int)
